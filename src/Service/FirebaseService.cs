@@ -36,7 +36,8 @@ namespace MedicalAPI.Service.Firebase
                 Role = UserRole.Doctor,
                 Address = doctorRequest.address,
                 License = doctorRequest.license,
-                Specialization = doctorRequest.specialization
+                Specialization = doctorRequest.specialization,
+                DeviceToken = ""
             };
     
             await _doctorRepository.AddDoctorAsync(doctor);
