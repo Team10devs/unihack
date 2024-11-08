@@ -27,9 +27,10 @@ namespace MedicalAPI.Service.Firebase
 
             UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
 
-            // Creează obiectul doctor pentru baza de date
+            
             var doctor = new DoctorModel()
             {
+                Id = userRecord.Uid,
                 Email = doctorRequest.email,
                 Fullname = doctorRequest.fullname,
                 Role = UserRole.Doctor,
@@ -37,7 +38,7 @@ namespace MedicalAPI.Service.Firebase
                 License = doctorRequest.license,
                 Specialization = doctorRequest.specialization
             };
-
+    
             await _doctorRepository.AddDoctorAsync(doctor);
             
             return userRecord.Uid;

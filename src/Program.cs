@@ -7,9 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var services = builder.Services;
 
+services.AddCors(options => options.AddPolicy("EnableAll", policy =>
+{
+    policy.AllowAnyOrigin();
+    policy.AllowAnyMethod();
+    policy.AllowAnyHeader();
+}));
+
 FirebaseApp.Create(new AppOptions()
 {
-    Credential = GoogleCredential.FromFile("secret.json")
+    Credential = GoogleCredential.FromFile("/home/david/Desktop/unihack-backend/src/secret.json")
 });
 
 services.AddEndpointsApiExplorer();
@@ -27,5 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("EnableAll");
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
