@@ -1,7 +1,8 @@
 using MedicalAPI.Domain.Entities.User;
 using MedicalAPI.Repository.Database;
-using MedicalAPI.Repository.Doctor;
 using Microsoft.EntityFrameworkCore;
+
+namespace MedicalAPI.Repository.Doctor;
 
 public class DoctorRepository : IDoctorRepository
 {
@@ -18,7 +19,7 @@ public class DoctorRepository : IDoctorRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
+    public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
     {
         return await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
     }

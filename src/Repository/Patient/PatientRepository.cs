@@ -29,7 +29,7 @@ public class PatientRepository : IPatientRepository
 
     public async Task CreatePatientAsync(PatientModel patientModel)
     {
-        _context.Patients.Add(patientModel);
+        await _context.Patients.AddAsync(patientModel);
         await _context.SaveChangesAsync();
     }
     
