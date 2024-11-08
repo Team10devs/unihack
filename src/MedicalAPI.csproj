@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
+        <PackageReference Include="Google.Cloud.Firestore" Version="3.9.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
@@ -16,6 +18,14 @@
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Repository\User" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\DTOs\Patient\" />
     </ItemGroup>
 
 </Project>
