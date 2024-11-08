@@ -1,0 +1,73 @@
+<div class="profile-container">
+  <h2>User Profile</h2>
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="profile-picture">
+        <img src="path/to/profile-image.jpg" alt="User profile picture">
+      </div>
+      <div class="profile-details">
+        <h3>Amelia Harper</h3>
+        <p>ID: 22 <mat-icon>content_copy</mat-icon></p>
+        <button mat-raised-button color="primary">
+          <mat-icon>lock</mat-icon> Change Password
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="profileForm">
+      <mat-card>
+        <mat-card-title>Basic Info</mat-card-title>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" placeholder="First Name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" placeholder="Last Name">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department">
+                <mat-option value="UI/UX">UI/UX</mat-option>
+                <mat-option value="Development">Development</mat-option>
+                <mat-option value="Marketing">Marketing</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Position</mat-label>
+              <input matInput formControlName="position" placeholder="Position">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Hired Date</mat-label>
+              <input matInput [matDatepicker]="hiredDatePicker" formControlName="hiredDate" placeholder="Hired Date">
+              <mat-datepicker-toggle matSuffix [for]="hiredDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #hiredDatePicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Birth Date</mat-label>
+              <input matInput [matDatepicker]="birthDatePicker" formControlName="birthDate" placeholder="Birth Date">
+              <mat-datepicker-toggle matSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #birthDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+
+  <div class="action-buttons">
+    <button mat-button color="warn">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!profileForm.valid">Save</button>
+  </div>
+</div>
