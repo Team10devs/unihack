@@ -1,7 +1,15 @@
+using MedicalAPI;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var configuration = builder.Configuration;
+var services = builder.Services;
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+services.AddControllers();
+services.AddRepositories(configuration);
 
 var app = builder.Build();
 
@@ -12,6 +20,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 
 app.Run();
