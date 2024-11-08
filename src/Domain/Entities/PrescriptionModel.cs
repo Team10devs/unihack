@@ -1,11 +1,12 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
+using MedicalAPI.Domain.Entities.User;
 
 namespace MedicalAPI.Domain.Entities.Entity.Documents;
 
 public class PrescriptionModel : Entity
 {
-    public string PatientId { get; set; }
-    public string DoctorId { get; set; }
+    public PatientModel Patient { get; set; }
+    public DoctorModel Doctor { get; set; }
     public string Diagnostic { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
