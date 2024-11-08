@@ -207,3 +207,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,angular,rider,webstorm
 
 *.DS_Store
+src/secret.json
