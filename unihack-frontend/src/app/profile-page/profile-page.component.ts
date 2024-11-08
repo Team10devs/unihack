@@ -8,6 +8,22 @@ import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/m
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {MatLabel} from '@angular/material/form-field';
+import {MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {AppComponent} from '../app.component';
+import {MatNativeDateModule, NativeDateAdapter, DateAdapter} from '@angular/material/core';
+import {NgIf, NgOptimizedImage} from '@angular/common';
+
+export const CUSTOM_DATE_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   standalone: true,
@@ -27,12 +43,21 @@ import {MatLabel} from '@angular/material/form-field';
     ReactiveFormsModule,
     MatInput,
     MatButton,
-    MatLabel
+    MatLabel,
+    AppComponent,
+    MatNativeDateModule,
+    NgOptimizedImage,
+    NgIf
   ],
-  styleUrls: ['./profile-page.component.scss']
+  styleUrls: ['./profile-page.component.scss'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }, // Change 'en-GB' to your desired locale (e.g., 'en-US')
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
+  ]
 })
 export class ProfilePageComponent implements OnInit {
   profileForm: FormGroup;
+  imagePreview: string | ArrayBuffer | null = null;
 
   constructor(private formBuilder: FormBuilder) {
     this.profileForm = this.formBuilder.group({
@@ -57,4 +82,19 @@ export class ProfilePageComponent implements OnInit {
   onCancel(): void {
     // Add logic to handle the cancel action
   }
+
+
+onFileSelected(event: Event): void {
+  const fileInput = event.target as HTMLInputElement;
+  if (fileInput.files && fileInput?.files[0]) {
+  const file = fileInput?.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    this.imagePreview = reader.result;
+  };
+
+  reader.readAsDataURL(file); // Read the file as a data URL
+}
+}
 }

@@ -3,7 +3,11 @@
   <div class="profile-card">
     <div class="profile-header">
       <div class="profile-picture">
-        <img src="path/to/profile-image.jpg" alt="User profile picture">
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="User profile picture" height="360" weight="360">
+        <p *ngIf="imagePreview">No image upload</p>
+      </div>
+      <div class="upload-section">
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
       </div>
       <div class="profile-details">
         <h3>Amelia Harper</h3>
