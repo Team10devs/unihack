@@ -14,8 +14,15 @@ public class DoctorRepository : IDoctorRepository
 
     public async Task AddDoctorAsync(DoctorModel doctor)
     {
-        await _context.Doctors.AddAsync(doctor);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Doctors.Add(doctor);  
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error adding doctor to the database", ex);
+        }
     }
 
     public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)

@@ -19,7 +19,8 @@ public class UserRepository : IUserRepository
         if (pacient != null)
         {
             pacient.DeviceToken = token;
-            
+            await _appDbContext.SaveChangesAsync();
+
             return;
         }
 
@@ -28,6 +29,8 @@ public class UserRepository : IUserRepository
         if (doctor != null)
         {
             doctor.DeviceToken = token;
+            await _appDbContext.SaveChangesAsync();
+            
             return;
         }
 
