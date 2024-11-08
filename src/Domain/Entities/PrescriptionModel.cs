@@ -12,7 +12,7 @@ public class PrescriptionModel : Entity
     public DateTime EndDate { get; set; }
     public List<MedicineModel> Medicine { get; set; }
 
-    public PrescriptionModel()
+    public PrescriptionModel()  
     {
         
     }
