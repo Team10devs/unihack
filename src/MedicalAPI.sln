@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicalAPI", "MedicalAPI.csproj", "{38B996FF-699B-453E-952A-F6C85B41605C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38B996FF-699B-453E-952A-F6C85B41605C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B996FF-699B-453E-952A-F6C85B41605C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B996FF-699B-453E-952A-F6C85B41605C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B996FF-699B-453E-952A-F6C85B41605C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
