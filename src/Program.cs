@@ -9,10 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var services = builder.Services;
 
-FirebaseApp.Create(new AppOptions()
+services.AddCors(options => options.AddPolicy("EnableAll", policy =>
 {
-    Credential = GoogleCredential.FromFile("secret.json")
-});
+    policy.AllowAnyOrigin();
+    policy.AllowAnyMethod();
+    policy.AllowAnyHeader();
+}));
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
@@ -32,5 +34,6 @@ app.UseAuthorization();
 
 app.UseCors("EnableAll");
 app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();

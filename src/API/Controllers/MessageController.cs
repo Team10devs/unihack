@@ -3,6 +3,7 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using MedicalAPI.Domain.Entities;
 using MedicalAPI.Domain.Enums;
+using MedicalAPI.Repository.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalAPI.API.Controllers;
@@ -12,15 +13,11 @@ namespace MedicalAPI.API.Controllers;
 public class MessageController : ControllerBase
 {
     private readonly FirebaseMessaging _firebaseMessaging;
-    private readonly FirebaseApp _firebaseApp;
-
-    public MessageController(FirebaseMessaging firebaseMessaging)
+    private readonly IUserRepository _userRepository;
+    public MessageController(FirebaseMessaging firebaseMessaging, IUserRepository userRepository)
     {
-        _firebaseApp = FirebaseApp.Create(new AppOptions
-        {
-            Credential = GoogleCredential.FromFile("secret.json")
-        });
         _firebaseMessaging = firebaseMessaging;
+        _userRepository = userRepository;
     }
 
     [HttpPost("send-message")]
@@ -58,12 +55,12 @@ public class MessageController : ControllerBase
         try
         {
             // Store the token in your database associated with the user ID
-            // await _userService.SaveDeviceTokenAsync(request.UserId, request.DeviceToken);
+            await _userRepository.SaveDeviceTokenAsync(request.UserId, request.DeviceToken);
             return Ok();
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
