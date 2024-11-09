@@ -27,62 +27,6 @@ namespace MedicalAPI.Controllers
         {
             var doctors = await _doctorService.GetAllAsync();
 
-            return Ok(doctors.Select(MapDoctorResponse));
-        }
-        
-        [HttpGet("GetDoctorById")]
-        public async Task<ActionResult<DoctorResponse>> GetADoctorById(string id)
-        {
-            try
-            {
-                var doctor = await _doctorService.GetByIdAsync(id);
-                
-                return Ok(MapDoctorResponse(doctor));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        
-        [HttpGet("GetByDoctorEmail")]
-        public async Task<ActionResult<DoctorResponse>> GetDoctorByEmail(string email)
-        {
-            try
-            {
-                var doctor = await _doctorService.GetDoctorByEmailAsync(email);
-                
-                return Ok(MapDoctorResponse(doctor));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-                string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
-
-        internal DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
-        {
-            var patientResponses = new List<PatientResponse>();
-            foreach (var patient in doctorModel.Patients)
-            {
-                patientResponses.Add(MapPatientResponse(patient));
-            }
-
-            var appointmentResponses = new List<AppointmentResponse>();
-            foreach (var appointment in doctorModel.DoctorAppointments)
-            {
-                appointmentResponses.Add(MapAppointmentResponse(appointment));
-            }
-            
-            return new DoctorResponse(doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
-        }
-        
-        [HttpGet("GetAllDoctors")]
-        public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
-        {
-            var doctors = await _doctorService.GetAllAsync();
-
             return Ok(doctors.Select(Mapping.MapDoctorResponse));
         }
         

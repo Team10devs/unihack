@@ -52,18 +52,6 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
             .Include(d=>d.DoctorAppointments)
             .ToListAsync();
     }
-
-    public async Task<DoctorModel> GetDoctorByEmailAsync(string email)
-    {
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Email == email);
-
-        if (doctor is null)
-        {
-            throw new Exception($"Doctor with email {email} does not exist");
-        }
-
-        return doctor;
-    }
     
     public async Task<DoctorModel> GetDoctorByCodeAsync(string code)
     {
@@ -74,7 +62,7 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
                 throw new ArgumentException("Code must be 6 characters long.");
             }
             
-            return await _context.Doctors.FirstOrDefaultAsync(d => d.Code == code);
+            return await context.Doctors.FirstOrDefaultAsync(d => d.Code == code);
         }
         catch (ArgumentException ex)
         {
@@ -92,9 +80,9 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
     {
         try
         {
-            _context.Doctors.Update(doctor);
+            context.Doctors.Update(doctor);
             
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -102,14 +90,5 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
             throw; 
         }
     }
-
-
-
-    public async Task<IEnumerable<DoctorModel>> GetAllAsync()
-    {
-        return await _context.Doctors
-            .Include(d => d.Patients)
-            .Include(d=>d.DoctorAppointments)
-            .ToListAsync();
-    }
+    
 }

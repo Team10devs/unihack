@@ -46,8 +46,7 @@ public class AppointmentService : IAppointmentService
 
     public async Task<AppointmentModel> CreateAppointment(AppointmentRequest appointmentRequest)
     {
-        var appointmentPatient = 
-           await  _patientRepository.GetPatientByIdAsync(appointmentRequest.patientId);
+        var appointmentPatient = await _patientRepository.GetPacientByIdAsync(appointmentRequest.patientId);
         
         if (appointmentPatient is null)
             throw new Exception($"Patient with id:{appointmentRequest.patientId} not found!");
