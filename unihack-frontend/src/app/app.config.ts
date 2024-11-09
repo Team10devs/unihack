@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
-    provideMessaging(() => getMessaging())
+    provideMessaging(() => getMessaging()), provideAnimationsAsync()
   ]
 };
 
