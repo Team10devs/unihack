@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardActions, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatFormField} from '@angular/material/form-field';
@@ -30,7 +30,6 @@ import {MatCard} from '@angular/material/card';
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
-  logoUrl: string = '';
 
   constructor(private formBuilder: FormBuilder) {
     this.loginForm = this.formBuilder.group({
