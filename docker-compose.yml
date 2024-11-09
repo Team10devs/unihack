@@ -10,7 +10,9 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgres;Database=mydb;Username=postgres;Password=postgres
+      - ConnectionStrings__Default=Host=postgres;Database=mydb;Username=postgres;Password=postgres
+    volumes:
+      - ./src/secret.json:/app/config/secret.json 
     depends_on:
       - postgres
 
