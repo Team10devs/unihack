@@ -43,6 +43,9 @@ public static class DependencyInjection
         services.AddScoped<FirebaseService>();
         services.AddSingleton(FirebaseMessaging.GetMessaging(firebaseApp));
         services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddSignalR();
+        services.AddControllersWithViews();
         
         return services;
     }
