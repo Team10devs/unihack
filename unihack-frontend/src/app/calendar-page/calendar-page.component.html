@@ -8,7 +8,7 @@
       <button (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">Day</button>
     </div>
 
-    <h2>{{ viewDate | date: 'MMMM yyyy' }}</h2>
+    <h2>{{ viewDate | date: 'MMMM yyyy dd' }}</h2>
 
     <div class="navigation-controls">
       <button (click)="viewDate = addDays(viewDate, -1)">
@@ -37,7 +37,9 @@
     <mwl-calendar-day-view
       *ngIf="view === CalendarView.Day"
       [viewDate]="viewDate"
-      [events]="events">
+      [events]="events"
+      [dayStartHour]="8"
+      [dayEndHour]="17">
     </mwl-calendar-day-view>
   </div>
 </div>
