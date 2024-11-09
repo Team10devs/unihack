@@ -1,3 +1,4 @@
+using MedicalAPI.Domain.Entities.User;
 using MedicalAPI.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,4 +37,36 @@ public class UserRepository : IUserRepository
 
         throw new Exception($"User with id {userId} does not exist");
     }
+    
+    public async Task<object> GetUserByEmailAsync(string email)
+    {
+        var pacient = await _appDbContext.Patients.FirstOrDefaultAsync(p => p.Email == email);
+
+        if (pacient != null)
+        {
+            return pacient; 
+        }
+
+        var doctor = await _appDbContext.Doctors.FirstOrDefaultAsync(d => d.Email == email);
+
+        if (doctor != null)
+        {
+            return doctor; 
+        }
+
+        throw new Exception($"User with email {email} does not exist");
+    }
+    
+    public async Task<PatientModel> GetPatientByEmailAsync(string email)
+    {
+        return await _appDbContext.Patients
+            .FirstOrDefaultAsync(p => p.Email == email);
+    }
+
+    public async Task<DoctorModel> GetDoctorByEmailAsync(string email)
+    {
+        return await _appDbContext.Doctors
+            .FirstOrDefaultAsync(d => d.Email == email);
+    }
+
 }

@@ -1,7 +1,12 @@
+using MedicalAPI.API;
+using MedicalAPI.Domain.DTOs.Appointment;
 using MedicalAPI.Service.Firebase;
-using MedicalAPI.Repository.Doctor;
 using Microsoft.AspNetCore.Mvc;
 using MedicalAPI.Domain.DTOs.Doctor;
+using MedicalAPI.Domain.DTOs.Patient;
+using MedicalAPI.Domain.Entities.Entity.Documents;
+using MedicalAPI.Domain.Entities.User;
+using MedicalAPI.Service.Firebase.Doctor;
 
 namespace MedicalAPI.Controllers
 {
@@ -10,32 +15,48 @@ namespace MedicalAPI.Controllers
     public class DoctorController : ControllerBase
     {
         private readonly FirebaseService _firebaseService;
-        private readonly IDoctorRepository _doctorRepository;
-
-        public DoctorController(FirebaseService firebaseService, IDoctorRepository doctorRepository)
+        private readonly IDoctorService _doctorService;
+        public DoctorController(FirebaseService firebaseService, IDoctorService doctorService)
         {
             _firebaseService = firebaseService;
-            _doctorRepository = doctorRepository;
+            _doctorService = doctorService;
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] DoctorRequest doctorRequest)
+        
+        [HttpGet("GetAllDoctors")]
+        public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var doctors = await _doctorService.GetAllAsync();
 
+            return Ok(doctors.Select(Mapping.MapDoctorResponse));
+        }
+        
+        [HttpGet("GetDoctorById")]
+        public async Task<ActionResult<DoctorResponse>> GetADoctorById(string id)
+        {
             try
             {
-                // Înregistrează doctorul în Firebase și primește UID-ul acestuia
-                string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
-
-                return Ok(new { Message = "Doctor registered successfully", FirebaseUid = firebaseUid });
+                var doctor = await _doctorService.GetByIdAsync(id);
+                
+                return Ok(Mapping.MapDoctorResponse(doctor));
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return StatusCode(500, new { Message = "Error registering doctor", Error = ex.Message });
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet("GetByDoctorEmail")]
+        public async Task<ActionResult<DoctorResponse>> GetDoctorByEmail(string email)
+        {
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByEmailAsync(email);
+                
+                return Ok(Mapping.MapDoctorResponse(doctor));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

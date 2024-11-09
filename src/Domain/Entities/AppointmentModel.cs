@@ -4,8 +4,9 @@ using MedicalAPI.Domain.Enums;
 
 namespace MedicalAPI.Domain.Entities.Entity.Documents;
 
-public class AppointmentModel : Entity
+public class AppointmentModel
 {
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public PatientModel Patient { get; set; }
     public DoctorModel Doctor { get; set; }
     public DateTime AppointmentStartTime { get; set; }

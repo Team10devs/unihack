@@ -8,11 +8,12 @@ public class PatientModel : UserModel
 {
     public DateTime BirthDate { get; set; }
     public string? Gender { get; set; }
-    public DoctorModel Doctor { get; set; }
+    public DoctorModel? Doctor { get; set; } //opt
     public string MedicalHistory { get; set; }
     public List<AppointmentModel> PatientAppointments { get; set; }
     public PatientModel()
     {
         
     }
+    
 }
