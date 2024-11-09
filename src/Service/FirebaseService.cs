@@ -5,6 +5,7 @@ using MedicalAPI.Domain.Enums;
 using MedicalAPI.Domain.DTOs.Doctor;
 using MedicalAPI.Domain.DTOs.Patient;
 using MedicalAPI.Repository.Patient;
+using MedicalAPI.Repository.User;
 
 namespace MedicalAPI.Service.Firebase
 {
@@ -12,11 +13,15 @@ namespace MedicalAPI.Service.Firebase
     {
         private readonly IDoctorRepository _doctorRepository;
         private readonly IPatientRepository _patientRepository;
+        private readonly IUserRepository _userRepository;
 
-        public FirebaseService(IDoctorRepository doctorRepository,IPatientRepository patientRepository)
+        public FirebaseService(IDoctorRepository doctorRepository,
+            IPatientRepository patientRepository,
+            IUserRepository userRepository)
         {
             _doctorRepository = doctorRepository;
             _patientRepository = patientRepository;
+            _userRepository = userRepository;
         }
         
         public async Task<string> RegisterDoctorAsync(DoctorRequest doctorRequest)
@@ -57,15 +62,20 @@ namespace MedicalAPI.Service.Firebase
                 Password = patientRequest.password,
                 EmailVerified = false
             };
-    
+
             UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
 
             try
             {
-                var doctor = await _doctorRepository.GetDoctorByCodeAsync(patientRequest.doctorCode);
-                if (doctor == null)
+                DoctorModel doctor = null;
+                
+                if (!string.IsNullOrEmpty(patientRequest.doctorCode))
                 {
-                    throw new Exception("Doctor not found with the provided code.");
+                    doctor = await _doctorRepository.GetDoctorByCodeAsync(patientRequest.doctorCode);
+                    if (doctor == null)
+                    {
+                        throw new Exception("Doctor not found with the provided code.");
+                    }
                 }
                 
                 var patient = new PatientModel()
@@ -78,13 +88,16 @@ namespace MedicalAPI.Service.Firebase
                     Gender = patientRequest.gender,
                     DeviceToken = "",
                     MedicalHistory = "",
-                    Doctor = doctor
+                    Doctor = doctor 
                 };
                 
                 await _patientRepository.AddPatientAsync(patient);
-
-                await _patientRepository.AddPatientToDoctorAsync(patientRequest.doctorCode, patient);
-                await _doctorRepository.UpdateDoctorAsync(doctor);
+                
+                if (doctor != null)
+                {
+                    await _patientRepository.AddPatientToDoctorAsync(patientRequest.doctorCode, patient);
+                    await _doctorRepository.UpdateDoctorAsync(doctor);
+                }
             }
             catch (Exception ex)
             {
@@ -94,6 +107,7 @@ namespace MedicalAPI.Service.Firebase
 
             return userRecord.Uid;
         }
+
 
         public async Task<string> GetUserTypeAsync(string email)
         {
@@ -105,13 +119,13 @@ namespace MedicalAPI.Service.Firebase
             {
                 return "Doctor";
             }
-
+            
             var patient = await _patientRepository.GetPacientByIdAsync(uid);
             if (patient != null)
             {
                 return "Patient";
             }
-
+            
             throw new Exception("User type not found");
         }
         
@@ -128,6 +142,16 @@ namespace MedicalAPI.Service.Firebase
             {
                 throw new Exception($"Login failed: {ex.Message}");
             }
+        }
+        
+        public async Task SaveDeviceTokenAsync(string userId, string deviceToken)
+        {
+            await _userRepository.SaveDeviceTokenAsync(userId, deviceToken);
+        }
+        
+        public async Task<object> GetUserByEmailAsync(string email)
+        {
+            return await _userRepository.GetUserByEmailAsync(email);
         }
         
         public async Task<UserRecord> VerifyIdTokenAsync(string idToken)

@@ -26,14 +26,9 @@ public class DoctorRepository : IDoctorRepository
         }
     }
 
-    public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
+    public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
     {
         var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
-        
-        if (doctor is null)
-        {
-            throw new Exception($"Doctor with id {doctorId} does not exist");
-        }
 
         return doctor;
     }

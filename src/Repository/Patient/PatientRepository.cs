@@ -42,16 +42,23 @@ public class PatientRepository : IPatientRepository
         await _doctorRepository.UpdateDoctorAsync(doctor);
     }
 
-    public async Task<PatientModel> GetPacientByIdAsync(string patientId)
+    public async Task<PatientModel?> GetPacientByIdAsync(string patientId)
     {
         var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId);
 
-        if (patient is null)
+        return patient;
+    }
+    
+    public async Task<DoctorModel> GetPacientByEmailAsync(string email)
+    {
+        var pacient = await _context.Doctors.FirstOrDefaultAsync(p => p.Email == email);
+
+        if (pacient is null)
         {
-            throw new Exception("Patient not found.");
+            throw new Exception($"Pacient with email {email} does not exist");
         }
 
-        return patient;
+        return pacient;
     }
     
 }
