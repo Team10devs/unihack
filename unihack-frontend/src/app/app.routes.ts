@@ -27,14 +27,12 @@ export const routes: Routes = [
   },
 
   {
-    path:"patient-page",
-    component : PatientTableComponent,
-    children: [
-      {
-        path: 'patient/:id',
+    path: "patient-page",
+    component: PatientTableComponent,
+  },
+  {
+        path: 'patient-page/patient/:id',
         component: PatientPageComponent,
-      }
-    ]
   },
   {
     path:"**",

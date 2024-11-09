@@ -15,6 +15,7 @@ import {
   MatDatepickerInput,
   MatDatepickerToggle
 } from '@angular/material/datepicker';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register-page',
@@ -49,7 +50,7 @@ import {
 export class RegisterPageComponent {
   registerForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private registerPageService: RegisterPageService) {
+  constructor(private formBuilder: FormBuilder, private registerPageService: RegisterPageService,private router :Router) {
     this.registerForm = this.formBuilder.group({
       fullName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -105,6 +106,7 @@ export class RegisterPageComponent {
 
         this.registerPageService.registerDoctor(doctorData).subscribe({
           next: (response) => {
+            this.router.navigate(['login-page'])
             console.log('Doctor registered successfully', response);
           },
           error: (error) => {
@@ -126,6 +128,7 @@ export class RegisterPageComponent {
 
         this.registerPageService.registerPatient(patientData).subscribe({
           next: (response) => {
+            this.router.navigate(['login-page'])
             console.log('Patient registered successfully', response);
           },
           error: (error) => {

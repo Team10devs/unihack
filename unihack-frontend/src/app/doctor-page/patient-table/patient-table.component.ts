@@ -124,7 +124,7 @@ export class PatientTableComponent implements OnInit{
   }
 
   goToDetails(patient: { id: number }) {
-    this.router.navigate(['patient', patient.id], { relativeTo: this.route });
+    this.router.navigate(['/patient-page/patient', patient.id]);
   }
 
   deletePatient(patient: Patient) {
