@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet');
+:root{
+  --mdc-theme-error: #B00020;
+  --mdc-outlined-card-outline-width:2px;
+}
+.wrap-register{
+  height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background: var(--color2);
+  margin: 0 auto;
+}
+.container{
+  background: var(--color1);
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  max-width: 768px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  height: calc(100% - (65px + 65px));
+  justify-content: center;
+  align-items: center;
+}
+.register-box{
+  background:var(--color2);
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  width: 360px;
+  padding:15px;
+  box-shadow: inherit;
+  /* height: 100vh; */
+}
+.register-box mat-card-header {
+  width: 150px;
+  height: 138px;
+  padding: 0;
+  margin-bottom: 26px;
+  display: block;
+}
+.mat-mdc-card-content {
+  padding:0;
+}
+.register-box mat-form-field{
+  border-color: var(--color3) !important;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  /*width: 100px;*/
+}
+
+.register-box mat-form-field:last-child{
+  margin-bottom: 0;
+}
+.mdc-text-field--invalid .mdc-text-field__input,.mdc-text-field .mdc-text-field__input,.form-field{
+  caret-color: #B00020!important;
+}
+.form-field{
+  display:flex;
+  justify-content:center;
+  font-size: 16px;
+  letter-spacing: 0.15px!important;
+  color: var(--color3)!important;
+}
+.mat-mdc-form-field-error-wrapper{
+  height: 18px;
+}
+.register-box mat-label,.mat-mdc-form-field-error{
+  color: #B00020 !important;
+}
+mat-form-field {
+  justify-content:center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: #B00020;
+  text-align: left;
+  font-family: 'Roboto', serif;
+  letter-spacing: 0.15px;
+  border: 2px solid #B00020;
+}
+.mdc-text-field--focused{
+  border: 2px solid #B00020;
+}
+.register-box .mat-form-field-invalid .mat-form-field-outline{
+  border-color: #B00020 !important;
+}
+.mdc-card__actions{
+  padding: 0;
+  min-height: 36px;
+}
+.mat-mdc-raised-button:not(:disabled){
+  background:var(--color3);
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  width: 98px;
+  text-align: left;
+  font-family: Roboto, Medium;
+  letter-spacing: 1.25px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 400;
+}
+mat-form-field .form-field{
+  color: #000000BC !important;
+}
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+@media(max-width:768px) {
+  .wrap-register{
+    background: var(--color1);
+    padding: 0 30px;
+  }
+  .container{
+    background: var(--color1);
+    height: auto;
+    padding:22px 21px;
+    width: auto;
+    max-width: inherit;
+  }
+}
+@media(max-width:430px) {
+  .container{
+    background: #FFFFFF;
+    box-shadow: inherit;
+    display: block;
+    justify-content: inherit;
+    align-items: inherit;
+  }
+  .register-box{
+    width: 100%;
+  }
+}
+

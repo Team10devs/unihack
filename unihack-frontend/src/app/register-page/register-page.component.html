@@ -1,1 +1,77 @@
-<p>register-page works!</p>
+<div class="wrap-register">
+  <div class="container">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <mat-card class="register-box">
+        <mat-card-content>
+
+          <!-- Full Name Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Full Name</mat-label>
+            <input matInput type="text" placeholder="Enter your full name" formControlName="fullName" required>
+            <mat-error *ngIf="registerForm.get('fullName')?.hasError('required')">Name is required</mat-error>
+          </mat-form-field>
+
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" placeholder="Enter your email" formControlName="email" required>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('email')">Invalid email format</mat-error>
+          </mat-form-field>
+
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" placeholder="Enter your password" formControlName="password" required>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('required')">Password is required</mat-error>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">Password should be at least 6 characters long</mat-error>
+          </mat-form-field>
+
+          <!-- Birthday Field -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Birth Date</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="Choose your birth date" formControlName="birthDate" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="registerForm.get('birthDate')?.hasError('required')">Birth date is required</mat-error>
+          </mat-form-field>
+
+          <!-- Doctor ID field - shown only if "registerAsDoctor" is false (i.e., for patients) -->
+          <div *ngIf="!registerForm.get('registerAsDoctor')?.value">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Doctor ID</mat-label>
+              <input matInput type="text" placeholder="Enter doctor ID" formControlName="doctorId">
+            </mat-form-field>
+          </div>
+
+          <!-- Doctor-specific fields, shown only if "registerAsDoctor" is true -->
+          <div *ngIf="registerForm.get('registerAsDoctor')?.value">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Address</mat-label>
+              <input matInput type="text" placeholder="Enter your address" formControlName="address">
+              <mat-error *ngIf="registerForm.get('address')?.hasError('required')">Address is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Specialization</mat-label>
+              <input matInput type="text" placeholder="Enter your specialization" formControlName="specialization">
+              <mat-error *ngIf="registerForm.get('specialization')?.hasError('required')">Specialization is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Diploma</mat-label>
+              <input matInput type="text" placeholder="Enter diploma details" formControlName="diploma">
+              <mat-error *ngIf="registerForm.get('diploma')?.hasError('required')">Diploma details are required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-checkbox formControlName="registerAsDoctor">Register as doctor</mat-checkbox>
+
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" type="submit">Register</button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

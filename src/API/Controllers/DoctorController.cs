@@ -1,3 +1,4 @@
+using MedicalAPI.API;
 using MedicalAPI.Domain.DTOs.Appointment;
 using MedicalAPI.Service.Firebase;
 using Microsoft.AspNetCore.Mvc;
@@ -20,33 +21,13 @@ namespace MedicalAPI.Controllers
             _firebaseService = firebaseService;
             _doctorService = doctorService;
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] DoctorRequest doctorRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
-
-                return Ok(new { Message = "Doctor registered successfully", FirebaseUid = firebaseUid });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "Error registering doctor", Error = ex.Message });
-            }
-        }
         
         [HttpGet("GetAllDoctors")]
         public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
         {
             var doctors = await _doctorService.GetAllAsync();
 
-            return Ok(doctors.Select(MapDoctorResponse));
+            return Ok(doctors.Select(Mapping.MapDoctorResponse));
         }
         
         [HttpGet("GetDoctorById")]
@@ -56,7 +37,7 @@ namespace MedicalAPI.Controllers
             {
                 var doctor = await _doctorService.GetByIdAsync(id);
                 
-                return Ok(MapDoctorResponse(doctor));
+                return Ok(Mapping.MapDoctorResponse(doctor));
             }
             catch (Exception e)
             {
@@ -71,52 +52,12 @@ namespace MedicalAPI.Controllers
             {
                 var doctor = await _doctorService.GetDoctorByEmailAsync(email);
                 
-                return Ok(MapDoctorResponse(doctor));
+                return Ok(Mapping.MapDoctorResponse(doctor));
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        internal static DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
-        {
-            var patientResponses = new List<PatientResponse>();
-            foreach (var patient in doctorModel.Patients)
-            {
-                patientResponses.Add(MapPatientResponse(patient));
-            }
-
-            var appointmentResponses = new List<AppointmentResponse>();
-            foreach (var appointment in doctorModel.DoctorAppointments)
-            {
-                appointmentResponses.Add(MapAppointmentResponse(appointment));
-            }
-            
-            return new DoctorResponse(doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
-        }
-
-        internal static PatientResponse MapPatientResponse(PatientModel patientModel)
-        {
-            var doctor = MapDoctorResponse(patientModel.Doctor);
-            var appointmentResponses = new List<AppointmentResponse>();
-            
-            foreach (var appointment in patientModel.PatientAppointments)
-            {
-                appointmentResponses.Add(MapAppointmentResponse(appointment));
-            }
-            
-            return new PatientResponse(patientModel.Id, patientModel.Fullname, patientModel.Email,
-                appointmentResponses, doctor);
-        }
-
-        public static AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
-        {
-            var doctorResponse = MapDoctorResponse(appointmentModel.Doctor);
-            var patientResponse = MapPatientResponse(appointmentModel.Patient);
-
-            return new AppointmentResponse(patientResponse, doctorResponse, appointmentModel.AppointmentStartTime,
-                appointmentModel.AppointmentEndTime);
         }
     }
 }

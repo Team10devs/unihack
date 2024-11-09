@@ -1,4 +1,4 @@
-﻿using MedicalAPI.Domain.Entities.Entity.Documents;
+using MedicalAPI.Domain.Entities.Entity.Documents;
 
 namespace MedicalAPI.Domain.Entities.User;
 
@@ -9,8 +9,10 @@ public class DoctorModel : UserModel
     public string Specialization { get; set; }
     public List<PatientModel> Patients { get; set; }
     public List<AppointmentModel> DoctorAppointments { get; set; }
-    public List<PrescriptionModel> DoctorPrescriptions { get; set; } = []; 
+    public string Code { get; set; } 
+
     public DoctorModel()
     {
     }
+    
 }

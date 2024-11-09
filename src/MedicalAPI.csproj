@@ -24,4 +24,9 @@
     <ItemGroup>
       <None Remove="Repository\User" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="API\Controllers\UserController.cs" />
+    </ItemGroup>
+
 </Project>

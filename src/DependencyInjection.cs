@@ -3,9 +3,13 @@ using MedicalAPI.Repository.Doctor;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
+using MedicalAPI.Repository.Appointments;
+using MedicalAPI.Repository.Patient;
 using MedicalAPI.Repository.User;
 using MedicalAPI.Service.Firebase;
+using MedicalAPI.Service.Firebase.Appointment;
 using MedicalAPI.Service.Firebase.Doctor;
+using MedicalAPI.Service.Firebase.Patient;
 using MedicalAPI.Service.Firebase.Prescription;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +32,17 @@ public static class DependencyInjection
             Credential = GoogleCredential.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "secret.json"))
         });
 
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IPatientService, PatientService>();
+        
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IAppointmentService,AppointmentService>();
+        
+
         services.AddScoped<IPrescriptionService, PrescriptionService>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IDoctorService, DoctorService>();
+        
         services.AddScoped<FirebaseService>();
         services.AddSingleton(FirebaseMessaging.GetMessaging(firebaseApp));
         services.AddScoped<IUserRepository, UserRepository>();
