@@ -2,6 +2,8 @@ using MedicalAPI.Service.Firebase;
 using MedicalAPI.Repository.Doctor;
 using Microsoft.AspNetCore.Mvc;
 using MedicalAPI.Domain.DTOs.Doctor;
+using MedicalAPI.Domain.Entities.User;
+using MedicalAPI.Service.Firebase.Doctor;
 
 namespace MedicalAPI.Controllers
 {
@@ -10,12 +12,11 @@ namespace MedicalAPI.Controllers
     public class DoctorController : ControllerBase
     {
         private readonly FirebaseService _firebaseService;
-        private readonly IDoctorRepository _doctorRepository;
-
-        public DoctorController(FirebaseService firebaseService, IDoctorRepository doctorRepository)
+        private readonly IDoctorService _doctorService;
+        public DoctorController(FirebaseService firebaseService, IDoctorService doctorService)
         {
             _firebaseService = firebaseService;
-            _doctorRepository = doctorRepository;
+            _doctorService = doctorService;
         }
 
         [HttpPost("register")]
@@ -37,6 +38,19 @@ namespace MedicalAPI.Controllers
             {
                 return StatusCode(500, new { Message = "Error registering doctor", Error = ex.Message });
             }
+        }
+        
+        [HttpGet(Name = "GetAllDoctors")]
+        public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
+        {
+            var doctors = await _doctorService.GetAllAsync();
+
+            return Ok(doctors.Select(Map));
+        }
+
+        private DoctorResponse Map(DoctorModel doctorModel)
+        {
+            return new DoctorResponse(doctorModel.Email, doctorModel.Fullname, [], []);
         }
     }
 }

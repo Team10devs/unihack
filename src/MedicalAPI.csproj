@@ -22,10 +22,25 @@
 
     <ItemGroup>
       <None Remove="Repository\User" />
+      <None Remove="Domain\DTOs\Patient\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\DTOs\Patient\" />
+      <Folder Include="Domain\DTOs\Appointment\Pacient\" />
+      <Folder Include="Service\Pacient\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="API\Controllers\UserController.cs" />
+      <Compile Remove="Domain\DTOs\Patient\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Domain\DTOs\Patient\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Domain\DTOs\Patient\**" />
     </ItemGroup>
 
 </Project>

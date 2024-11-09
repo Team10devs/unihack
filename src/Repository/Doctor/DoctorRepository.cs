@@ -26,8 +26,35 @@ public class DoctorRepository : IDoctorRepository
         }
     }
 
-    public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
+    public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
     {
-        return await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+        
+        if (doctor is null)
+        {
+            throw new Exception($"Doctor with id {doctorId} does not exist");
+        }
+
+        return doctor;
+    }
+
+    public async Task<DoctorModel> GetDoctorByEmailAsync(string email)
+    {
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Email == email);
+
+        if (doctor is null)
+        {
+            throw new Exception($"Doctor with email {email} does not exist");
+        }
+
+        return doctor;
+    }
+
+    public async Task<IEnumerable<DoctorModel>> GetAllAsync()
+    {
+        return await _context.Doctors
+            .Include(d => d.Patients)
+            .Include(d=>d.DoctorAppointments)
+            .ToListAsync();
     }
 }
