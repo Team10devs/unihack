@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatIcon} from '@angular/material/icon';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
@@ -12,6 +12,7 @@ import {MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {AppComponent} from '../app.component';
 import {MatNativeDateModule, NativeDateAdapter, DateAdapter} from '@angular/material/core';
 import {NgIf, NgOptimizedImage} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
 
 export const CUSTOM_DATE_FORMATS = {
   parse: {
@@ -47,7 +48,8 @@ export const CUSTOM_DATE_FORMATS = {
     AppComponent,
     MatNativeDateModule,
     NgOptimizedImage,
-    NgIf
+    NgIf,
+    RouterOutlet
   ],
   styleUrls: ['./profile-page.component.scss'],
   providers: [
@@ -55,11 +57,11 @@ export const CUSTOM_DATE_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
   ]
 })
-export class ProfilePageComponent implements OnInit {
+export class ProfilePageComponent {
   profileForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private renderer: Renderer2) {
     this.profileForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -70,7 +72,6 @@ export class ProfilePageComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
 
   onSave(): void {
     if (this.profileForm.valid) {
