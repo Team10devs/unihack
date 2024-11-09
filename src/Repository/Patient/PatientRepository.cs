@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI.Repository.Patient;
 
-public class PatientRepository : IPatientRepository
+public class PatientRepository(AppDbContext context) : IPatientRepository
 {
+    public async Task<List<PatientModel>> GetAllPatientsAsync()
     private readonly AppDbContext _context;
     private readonly IDoctorRepository _doctorRepository;
 
@@ -18,6 +19,10 @@ public class PatientRepository : IPatientRepository
     }
     public async Task AddPatientAsync(PatientModel patient)
     {
+        return await context.Patients
+            .Include( d => d.Doctor )
+            .Include( a => a.PatientAppointments)
+            .ToListAsync();
         try
         {
             _context.Patients.Add(patient);  
@@ -40,13 +45,28 @@ public class PatientRepository : IPatientRepository
         doctor.Patients.Add(patient);
         
         await _doctorRepository.UpdateDoctorAsync(doctor);
+        return await context.Patients
+            .Where(patient => patient.Id == patientId)
+            .OrderBy(patient => patient.Fullname)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<PatientModel?> GetPacientByIdAsync(string patientId)
+    public async Task<PatientModel?> GetPatientByEmailAsync(string email)
+    {
+        return await context.Patients
+            .Include( a=> a.PatientAppointments )
+            .Include( d=> d.Doctor)
+            .FirstOrDefaultAsync(p => p.Email == email);
+    }
+
+    public async Task CreatePatientAsync(PatientModel patientModel)
     {
         var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId);
 
         return patient;
+        await context.Patients.AddAsync(patientModel);
+        await context.SaveChangesAsync();
     }
     
     public async Task<DoctorModel> GetPacientByEmailAsync(string email)

@@ -4,21 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI.Repository.Doctor;
 
-public class DoctorRepository : IDoctorRepository
+public class DoctorRepository(AppDbContext context) : IDoctorRepository
 {
-    private readonly AppDbContext _context;
-
-    public DoctorRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task AddDoctorAsync(DoctorModel doctor)
     {
         try
         {
-            _context.Doctors.Add(doctor);  
-            await _context.SaveChangesAsync();
+            context.Doctors.Add(doctor);  
+            await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -26,11 +19,38 @@ public class DoctorRepository : IDoctorRepository
         }
     }
 
-    public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
+    public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
     {
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+        var doctor = await context.Doctors
+            .Include( a=> a.DoctorAppointments)
+            .Include( p => p.Patients )
+            .FirstOrDefaultAsync(d => d.Id == doctorId);
+        
 
         return doctor;
+    }
+
+    public async Task<DoctorModel> GetDoctorByEmailAsync(string email)
+    {
+        var doctor = await context.Doctors
+            .Include( a=> a.DoctorAppointments)
+            .Include( p => p.Patients )
+            .FirstOrDefaultAsync(d => d.Email == email);
+
+        if (doctor is null)
+        {
+            throw new Exception($"Doctor with email {email} does not exist");
+        }
+
+        return doctor;
+    }
+
+    public async Task<IEnumerable<DoctorModel>> GetAllAsync()
+    {
+        return await context.Doctors
+            .Include(d => d.Patients)
+            .Include(d=>d.DoctorAppointments)
+            .ToListAsync();
     }
 
     public async Task<DoctorModel> GetDoctorByEmailAsync(string email)

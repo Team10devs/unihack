@@ -1,3 +1,4 @@
+using MedicalAPI.API;
 using MedicalAPI.Domain.DTOs.Appointment;
 using MedicalAPI.Service.Firebase;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,11 @@ namespace MedicalAPI.Controllers
     [ApiController]
     public class DoctorController : ControllerBase
     {
-        
+        private readonly FirebaseService _firebaseService;
         private readonly IDoctorService _doctorService;
-        public DoctorController(IDoctorService doctorService)
+        public DoctorController(FirebaseService firebaseService, IDoctorService doctorService)
         {
+            _firebaseService = firebaseService;
             _doctorService = doctorService;
         }
         
@@ -57,6 +59,7 @@ namespace MedicalAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
+                string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
 
         internal DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
         {
@@ -74,28 +77,43 @@ namespace MedicalAPI.Controllers
             
             return new DoctorResponse(doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
         }
-
-        internal PatientResponse MapPatientResponse(PatientModel patientModel)
+        
+        [HttpGet("GetAllDoctors")]
+        public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
         {
-            var doctor = MapDoctorResponse(patientModel.Doctor);
-            var appointmentResponses = new List<AppointmentResponse>();
-            
-            foreach (var appointment in patientModel.PatientAppointments)
-            {
-                appointmentResponses.Add(MapAppointmentResponse(appointment));
-            }
-            
-            return new PatientResponse(patientModel.Id, patientModel.Fullname, patientModel.Email,
-                appointmentResponses, doctor);
+            var doctors = await _doctorService.GetAllAsync();
+
+            return Ok(doctors.Select(Mapping.MapDoctorResponse));
         }
-
-        internal AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
+        
+        [HttpGet("GetDoctorById")]
+        public async Task<ActionResult<DoctorResponse>> GetADoctorById(string id)
         {
-            var doctorResponse = MapDoctorResponse(appointmentModel.Doctor);
-            var patientResponse = MapPatientResponse(appointmentModel.Patient);
-
-            return new AppointmentResponse(patientResponse, doctorResponse, appointmentModel.AppointmentDate,
-                appointmentModel.AppointmentDuration);
+            try
+            {
+                var doctor = await _doctorService.GetByIdAsync(id);
+                
+                return Ok(Mapping.MapDoctorResponse(doctor));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet("GetByDoctorEmail")]
+        public async Task<ActionResult<DoctorResponse>> GetDoctorByEmail(string email)
+        {
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByEmailAsync(email);
+                
+                return Ok(Mapping.MapDoctorResponse(doctor));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

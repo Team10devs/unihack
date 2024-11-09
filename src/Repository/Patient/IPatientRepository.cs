@@ -9,4 +9,7 @@ public interface IPatientRepository
     Task<PatientModel> GetPacientByIdAsync(string patientId);
 
     Task<DoctorModel> GetPacientByEmailAsync(string email);
+    public Task<List<PatientModel>> GetAllPatientsAsync();
+    public Task<PatientModel?> GetPatientByEmailAsync(string email);
+    public Task CreatePatientAsync(PatientModel patientModel);
 }

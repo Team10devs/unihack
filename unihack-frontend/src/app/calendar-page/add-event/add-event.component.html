@@ -1,0 +1,68 @@
+<button class="add-event-btn" (click)="openDialog()">
+  <i class="fas fa-plus"></i>Add Appointment
+</button>
+<br>
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>Add Appointment</h2>
+      <button class="close-btn" (click)="closeDialog()">×</button>
+    </div>
+
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+      <div class="form-group">
+        <label for="title">Event Title</label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          placeholder="Enter event title">
+      </div>
+
+      <div class="form-group">
+        <label for="start">Start Date</label>
+        <input
+          id="start"
+          type="datetime-local"
+          formControlName="start">
+      </div>
+
+      <div class="form-group">
+        <label for="end">End Date</label>
+        <input
+          id="end"
+          type="datetime-local"
+          formControlName="end">
+      </div>
+
+      <div class="form-group checkbox">
+        <input
+          id="allDay"
+          type="checkbox"
+          formControlName="allDay">
+        <label for="allDay">All Day Event</label>
+      </div>
+
+      <div class="form-group">
+        <label for="primaryColor">Primary Color</label>
+        <input
+          id="primaryColor"
+          type="color"
+          formControlName="primaryColor">
+      </div>
+
+      <div class="form-group">
+        <label for="secondaryColor">Secondary Color</label>
+        <input
+          id="secondaryColor"
+          type="color"
+          formControlName="secondaryColor">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="closeDialog()">Cancel</button>
+        <button type="submit" [disabled]="!eventForm.valid">Create Event</button>
+      </div>
+    </form>
+  </div>
+</div>

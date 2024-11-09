@@ -1,0 +1,30 @@
+.p-tabmenu {
+  background-color: var(--color3);
+}
+
+.p-tabmenu .p-tabmenu-nav {
+  background: var(--color3) !important;
+  border: none;
+/ / Remove border if needed
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  background: var(--color3);
+
+  &:not(.p-disabled):focus,
+  &:not(.p-disabled):hover {
+    background: var(--color3);
+  }
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  background: var(--color3);
+
+/ / For hover state of active item &: hover {
+  background: var(--color3);
+}
+
+  .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link .p-menuitem-text {
+    color: var(--text-color);
+  }
+}
