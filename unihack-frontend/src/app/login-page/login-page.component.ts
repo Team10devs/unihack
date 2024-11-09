@@ -53,13 +53,11 @@ export class LoginPageComponent {
     if (this.loginForm.valid) {
       console.log('Login form submitted');
       this.loginPageService.login(this.loginForm.get(['email'])?.value,this.loginForm.get(['password'])?.value).subscribe(temp => {
-        const userUID = '1235';
-        sessionStorage.setItem('userUID', '12345');
-        if(userUID)
-        this.auth.setUserId(userUID);
+        console.log(temp.userId);
+        this.auth.setUserId(temp.userId);
         sessionStorage.removeItem('userUID');
         if(temp.userType ==='Doctor'){
-          this.router.navigate(['/patient-table'])
+          this.router.navigate(['/calendar-page'])
         }
         else{
           this.router.navigate(['/patient-page'])
