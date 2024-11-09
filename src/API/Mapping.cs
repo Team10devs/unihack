@@ -58,6 +58,7 @@ public static class Mapping
             appointmentModel.Patient.Id,
             appointmentModel.Doctor.Id,
             appointmentModel.AppointmentStartTime,
-            appointmentModel.AppointmentEndTime);
+            appointmentModel.AppointmentEndTime,
+            appointmentModel.AppointmentStatus);
     }
 }
