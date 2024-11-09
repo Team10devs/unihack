@@ -62,6 +62,11 @@ export class CalendarPageComponent {
       title: 'Another event',
       color: { primary: '#e3bc08', secondary: '#FDF1BA' },
     },
+    {
+      start: startOfDay(new Date()),
+      title: 'Another event',
+      color: { primary: '#e3bc08', secondary: '#FDF1BA' },
+    },
   ];
 
   setView(view: CalendarView) {
