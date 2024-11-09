@@ -7,21 +7,34 @@ import {CalendarPageComponent} from './calendar-page/calendar-page.component';
 import {style} from '@angular/animations';
 import {ChatAppComponent} from './chat-app/chat-app.component';
 import {RegisterPageComponent} from './register-page/register-page.component';
+import {LoginPageComponent} from './login-page/login-page.component';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {AuthService} from './AuthService';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, DoctorPageComponent, TabMenuModule, CalendarPageComponent, ChatAppComponent],
+  imports: [HttpClientModule,RouterOutlet, DoctorPageComponent, TabMenuModule, CalendarPageComponent, ChatAppComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  providers:[LoginPageComponent,HttpClient,HttpClientModule]
 })
 export class AppComponent implements OnInit {
-  constructor(private renderer: Renderer2, private router: Router) {}
+  constructor(private renderer: Renderer2, private router: Router, private auth:AuthService) {}
+
+userId :string | null  = null;
 
   ngOnInit(): void {
-    this.loadScript('https://cdn.botpress.cloud/webchat/v2.2/inject.js', () => {
-      this.loadScript('https://files.bpcontent.cloud/2024/11/09/08/20241109084554-UXGPSC7L.js');
+    this.userId = localStorage.getItem('userUID');
+
+    this.auth.userId$.subscribe((id) => {
+      this.userId = id;
     });
+      this.loadScript('https://cdn.botpress.cloud/webchat/v2.2/inject.js', () => {
+        this.loadScript('https://files.bpcontent.cloud/2024/11/09/08/20241109084554-UXGPSC7L.js');
+      });
+
+
     this.items = [
       {label: 'Home', icon: 'pi pi-fw pi-home'},
       {label: 'Calendar', icon: 'pi pi-fw pi-calendar',routerLink : 'calendar-page'},
