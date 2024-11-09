@@ -1,5 +1,6 @@
 ﻿using MedicalAPI.Controllers;
 using MedicalAPI.Domain.DTOs.Appointment;
+using MedicalAPI.Domain.Enums;
 using MedicalAPI.Service.Firebase.Appointment;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,7 +64,24 @@ public class AppointmentController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-
     }
-    
+
+    [HttpPatch("PatchStatus{Id}")]
+    public async Task<ActionResult> ChangeAppointmentStatus(string appointmentId, 
+        [FromBody] AppointmentStatus appointmentStatus)
+    {
+        try
+        {
+            var result =
+                await _appointmentService.UpdateAppointmentStatus(appointmentId, appointmentStatus);
+
+            if (result)
+                return Ok(result); 
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
