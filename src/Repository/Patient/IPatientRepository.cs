@@ -4,7 +4,7 @@ namespace MedicalAPI.Repository.Patient;
 
 public interface IPatientRepository
 {
-    public Task<List<PatientModel>> GetAllPatientsAsync();
-    public Task<PatientModel?> GetPatientByIdAsync(string patientId);
-    public Task CreatePatientAsync(PatientModel patientModel);
+    Task AddPatientAsync(PatientModel patient);
+    Task AddPatientToDoctorAsync(string doctorName, PatientModel patient);
+    Task<PatientModel> GetPacientByIdAsync(string patientId);
 }

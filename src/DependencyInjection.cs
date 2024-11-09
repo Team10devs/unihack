@@ -3,6 +3,7 @@ using MedicalAPI.Repository.Doctor;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
+using MedicalAPI.Repository.Patient;
 using MedicalAPI.Repository.User;
 using MedicalAPI.Service.Firebase;
 using MedicalAPI.Service.Firebase.Doctor;
@@ -29,6 +30,7 @@ public static class DependencyInjection
         
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IDoctorService, DoctorService>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<FirebaseService>();
         services.AddSingleton(FirebaseMessaging.GetMessaging(firebaseApp));
         services.AddScoped<IUserRepository, UserRepository>();

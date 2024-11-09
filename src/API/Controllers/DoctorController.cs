@@ -13,32 +13,11 @@ namespace MedicalAPI.Controllers
     [ApiController]
     public class DoctorController : ControllerBase
     {
-        private readonly FirebaseService _firebaseService;
+        
         private readonly IDoctorService _doctorService;
-        public DoctorController(FirebaseService firebaseService, IDoctorService doctorService)
+        public DoctorController(IDoctorService doctorService)
         {
-            _firebaseService = firebaseService;
             _doctorService = doctorService;
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] DoctorRequest doctorRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
-
-                return Ok(new { Message = "Doctor registered successfully", FirebaseUid = firebaseUid });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "Error registering doctor", Error = ex.Message });
-            }
         }
         
         [HttpGet("GetAllDoctors")]

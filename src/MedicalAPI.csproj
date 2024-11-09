@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Service\Pacient\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Remove="API\Controllers\UserController.cs" />
     </ItemGroup>
 

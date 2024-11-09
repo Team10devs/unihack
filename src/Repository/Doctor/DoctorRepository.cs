@@ -49,6 +49,46 @@ public class DoctorRepository : IDoctorRepository
 
         return doctor;
     }
+    
+    public async Task<DoctorModel> GetDoctorByCodeAsync(string code)
+    {
+        try
+        {
+            if (code.Length != 6)
+            {
+                throw new ArgumentException("Code must be 6 characters long.");
+            }
+            
+            return await _context.Doctors.FirstOrDefaultAsync(d => d.Code == code);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Validation error: {ex.Message}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching doctor by code: {ex.Message}");
+            return null;
+        }
+    }
+    
+    public async Task UpdateDoctorAsync(DoctorModel doctor)
+    {
+        try
+        {
+            _context.Doctors.Update(doctor);
+            
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating doctor: {ex.Message}");
+            throw; 
+        }
+    }
+
+
 
     public async Task<IEnumerable<DoctorModel>> GetAllAsync()
     {
