@@ -26,7 +26,7 @@ import {MatCard} from '@angular/material/card';
     MatLabel
   ],
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.css'
+  styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
