@@ -115,8 +115,8 @@ namespace MedicalAPI.Controllers
             var doctorResponse = MapDoctorResponse(appointmentModel.Doctor);
             var patientResponse = MapPatientResponse(appointmentModel.Patient);
 
-            return new AppointmentResponse(patientResponse, doctorResponse, appointmentModel.AppointmentDate,
-                appointmentModel.AppointmentDuration);
+            return new AppointmentResponse(patientResponse, doctorResponse, appointmentModel.AppointmentStartTime,
+                appointmentModel.AppointmentEndTime);
         }
     }
 }

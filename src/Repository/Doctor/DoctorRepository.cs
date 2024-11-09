@@ -21,7 +21,7 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
 
     public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
     {
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+        var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
         
         if (doctor is null)
         {
@@ -33,7 +33,7 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
 
     public async Task<DoctorModel> GetDoctorByEmailAsync(string email)
     {
-        var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Email == email);
+        var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.Email == email);
 
         if (doctor is null)
         {
@@ -45,7 +45,7 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
 
     public async Task<IEnumerable<DoctorModel>> GetAllAsync()
     {
-        return await _context.Doctors
+        return await context.Doctors
             .Include(d => d.Patients)
             .Include(d=>d.DoctorAppointments)
             .ToListAsync();
