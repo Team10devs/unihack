@@ -23,14 +23,4 @@
     <ItemGroup>
       <None Remove="Repository\User" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Domain\DTOs\Patient\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="Service\Appointment\AppointmentService.cs" />
-      <Compile Include="Service\Appointment\IAppointmentService.cs" />
-    </ItemGroup>
-
 </Project>
