@@ -25,7 +25,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\DTOs\Patient\" />
+      <Folder Include="Service\Pacient\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="API\Controllers\UserController.cs" />
     </ItemGroup>
 
 </Project>
