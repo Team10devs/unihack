@@ -24,7 +24,10 @@ public class PatientRepository(AppDbContext context) : IPatientRepository
 
     public async Task<PatientModel?> GetPatientByEmailAsync(string email)
     {
-        return await context.Patients.FirstOrDefaultAsync(p => p.Email == email);
+        return await context.Patients
+            .Include( a=> a.PatientAppointments )
+            .Include( d=> d.Doctor)
+            .FirstOrDefaultAsync(p => p.Email == email);
     }
 
     public async Task CreatePatientAsync(PatientModel patientModel)
