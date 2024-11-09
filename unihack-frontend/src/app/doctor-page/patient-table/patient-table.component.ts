@@ -10,6 +10,9 @@ import {Button, ButtonDirective} from 'primeng/button';
 import {ChipsModule} from 'primeng/chips';
 import {NgClass, NgIf} from '@angular/common';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
+import {PatientTableService} from './patient-table.service';
+import {AuthService} from '../../AuthService';
+import {IPatient} from '../../models/IPatient';
 
 interface Patient {
   id?: number;
@@ -47,7 +50,7 @@ export class PatientTableComponent implements OnInit{
   @ViewChild('dt') dt!: Table;
 
   patientDialog: boolean = false;
-  patients: Patient[] = [];
+  patients: IPatient[] = [];
   patient: Patient = this.initializePatient();
   selectedPatients: Patient[] = [];
   submitted: boolean = false;
@@ -60,7 +63,9 @@ export class PatientTableComponent implements OnInit{
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private router : Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private patientTableService :PatientTableService,
+    private authService :AuthService
   ) {}
 
   ngOnInit() {
@@ -79,35 +84,15 @@ export class PatientTableComponent implements OnInit{
 
   loadPatients() {
     this.loading = true;
-    setTimeout(() => {
-      this.patients = [
-        {
-          id: 1,
-          fullName: 'John Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
-        },
-        {
-          id: 3,
-          fullName: 'J2ohn Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
-        },
-        {
-          id: 2,
-          fullName: 'Jo3hn Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
-        }
-      ];
-      this.loading = false;
-    }, 1000);
+
+    this.authService.userId$.subscribe(temp =>{
+      if(temp)
+      this.patientTableService.getPatientsByDoctorId(temp).subscribe(data=>{\
+        console.log()
+        this.patients = data;
+      })
+
+    })
   }
 
   openNew() {
