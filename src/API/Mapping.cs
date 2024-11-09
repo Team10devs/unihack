@@ -31,7 +31,7 @@ public static class Mapping
         }
         else throw new Exception("Mapping Doctor Appointments");
             
-        return new DoctorResponse(doctorModel.Id,doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
+        return new DoctorResponse(doctorModel.Id,doctorModel.Email, doctorModel.Fullname, doctorModel.Code, appointmentResponses, patientResponses);
     }
 
     public static PatientResponse MapPatientResponse(PatientModel patientModel)
