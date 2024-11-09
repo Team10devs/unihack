@@ -49,7 +49,7 @@ public static class Mapping
         //else throw new Exception("Mapping Patient Appointments");
             
         return new PatientResponse(patientModel.Id, patientModel.Fullname, patientModel.Email,
-            appointmentResponses, patientModel.Doctor != null ? patientModel.Doctor.Id : "");
+            patientModel.Gender, patientModel.BirthDate, patientModel.MedicalHistory, appointmentResponses, patientModel.Doctor != null ? patientModel.Doctor.Id : "");
     }   
 
     public static AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
