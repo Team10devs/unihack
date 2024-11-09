@@ -1,4 +1,5 @@
-﻿
+
+using MedicalAPI.Domain.Entities.Entity.Documents;
 using MedicalAPI.Domain.Enums;
 
 namespace MedicalAPI.Domain.Entities.User;

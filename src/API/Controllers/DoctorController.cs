@@ -79,7 +79,7 @@ namespace MedicalAPI.Controllers
             }
         }
 
-        internal DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
+        internal static DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
         {
             var patientResponses = new List<PatientResponse>();
             foreach (var patient in doctorModel.Patients)
@@ -96,7 +96,7 @@ namespace MedicalAPI.Controllers
             return new DoctorResponse(doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
         }
 
-        internal PatientResponse MapPatientResponse(PatientModel patientModel)
+        internal static PatientResponse MapPatientResponse(PatientModel patientModel)
         {
             var doctor = MapDoctorResponse(patientModel.Doctor);
             var appointmentResponses = new List<AppointmentResponse>();
@@ -110,7 +110,7 @@ namespace MedicalAPI.Controllers
                 appointmentResponses, doctor);
         }
 
-        internal AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
+        public static AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
         {
             var doctorResponse = MapDoctorResponse(appointmentModel.Doctor);
             var patientResponse = MapPatientResponse(appointmentModel.Patient);

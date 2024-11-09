@@ -9,7 +9,7 @@ public class DoctorModel : UserModel
     public string Specialization { get; set; }
     public List<PatientModel> Patients { get; set; }
     public List<AppointmentModel> DoctorAppointments { get; set; }
-
+    public List<PrescriptionModel> DoctorPrescriptions { get; set; } = []; 
     public DoctorModel()
     {
     }

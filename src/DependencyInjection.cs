@@ -6,6 +6,7 @@ using Google.Apis.Auth.OAuth2;
 using MedicalAPI.Repository.User;
 using MedicalAPI.Service.Firebase;
 using MedicalAPI.Service.Firebase.Doctor;
+using MedicalAPI.Service.Firebase.Prescription;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI;
@@ -26,7 +27,8 @@ public static class DependencyInjection
         {
             Credential = GoogleCredential.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "secret.json"))
         });
-        
+
+        services.AddScoped<IPrescriptionService, PrescriptionService>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IDoctorService, DoctorService>();
         services.AddScoped<FirebaseService>();
