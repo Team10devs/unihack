@@ -9,7 +9,10 @@ import {MatError} from '@angular/material/form-field';
 import {MatLabel} from '@angular/material/form-field';
 import {MatCard} from '@angular/material/card';
 import {LoginPageService} from './login-page.service';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {BehaviorSubject} from 'rxjs';
+import {AuthService} from '../AuthService';
 
 @Component({
   selector: 'app-login-page',
@@ -28,26 +31,38 @@ import {HttpClientModule} from '@angular/common/http';
     MatLabel,
     HttpClientModule,
   ],
-  providers:[LoginPageService],
+  providers:[LoginPageService,HttpClient,HttpClientModule],
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss'
+  styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
   logoUrl: string = '';
 
-  constructor(private formBuilder: FormBuilder,private loginPageService : LoginPageService) {
+  constructor(private formBuilder: FormBuilder,private loginPageService : LoginPageService,private router :Router,private auth : AuthService) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
+  private userIdSubject = new BehaviorSubject<string | null>(localStorage.getItem('userUID'));
+  userId$ = this.userIdSubject.asObservable();
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       console.log('Login form submitted');
-      this.loginPageService.login(this.loginForm.get(['email'])?.value,this.loginForm.get(['password'])?.value).subscribe(temp => console.log(temp))
-
+      this.loginPageService.login(this.loginForm.get(['email'])?.value,this.loginForm.get(['password'])?.value).subscribe(temp => {
+        this.auth.setUserId(temp.userId);
+        this.auth.setUserRole$(temp.userType);
+        console.log(temp.userType);
+        if(temp.userType ==='Doctor'){
+          this.router.navigate(['/calendar-page'])
+        }
+        else{
+          this.router.navigate(['/patient-page'])
+        }
+      })
     } else {
       return;
     }

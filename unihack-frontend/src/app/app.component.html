@@ -1,10 +1,13 @@
 <body>
+@if(userId != null){
 <p-tabMenu [model]="items"></p-tabMenu>
-<router-outlet/>
 
 <app-chat-app></app-chat-app>
 
 <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2024/11/09/08/20241109084554-UXGPSC7L.js"></script>
+
+}
+<router-outlet/>
 
 </body>
