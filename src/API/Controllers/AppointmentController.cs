@@ -26,7 +26,7 @@ public class AppointmentController : ControllerBase
             var appointments = 
                 await _appointmentService.GetPatientAppointments(patientId);
             
-            return Ok(appointments.Select(DoctorController.MapAppointmentResponse));
+            return Ok(appointments.Select(Mapping.MapAppointmentResponse));
         }
         catch (Exception ex)
         {
@@ -42,7 +42,7 @@ public class AppointmentController : ControllerBase
             var appointments = 
                 await _appointmentService.GetDoctorAppointments(doctorId);
             
-            return Ok(appointments.Select(DoctorController.MapAppointmentResponse));
+            return Ok(appointments.Select(Mapping.MapAppointmentResponse));
         }
         catch (Exception ex)
         {
@@ -58,7 +58,7 @@ public class AppointmentController : ControllerBase
         {
             var createdAppointment =
                 await _appointmentService.CreateAppointment(appointmentRequest);
-            return Ok(DoctorController.MapAppointmentResponse(createdAppointment));
+            return Ok(Mapping.MapAppointmentResponse(createdAppointment));
         }
         catch(Exception ex)
         {

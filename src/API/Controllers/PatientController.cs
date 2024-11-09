@@ -18,7 +18,7 @@ public class PatientController(IPatientService _patientService) : ControllerBase
             var patientsByDoctorId =
                 await _patientService.GetPatientsByDoctorIdAsync(doctorId);
             
-            return Ok(patientsByDoctorId.Select(DoctorController.MapPatientResponse));
+            return Ok(patientsByDoctorId.Select(Mapping.MapPatientResponse));
         }
         catch (Exception ex)
         {
@@ -32,7 +32,7 @@ public class PatientController(IPatientService _patientService) : ControllerBase
         try
         {
             var patient = await _patientService.GetPatientByEmailAsync(email);
-            return Ok(DoctorController.MapPatientResponse(patient));
+            return Ok(Mapping.MapPatientResponse(patient));
         }
         catch (Exception ex)
         {
