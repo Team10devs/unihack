@@ -9,6 +9,7 @@ public class PatientRepository(AppDbContext context) : IPatientRepository
     public async Task<List<PatientModel>> GetAllPatientsAsync()
     {
         return await context.Patients
+            .Include( d => d.Doctor )
             .Include( a => a.PatientAppointments)
             .ToListAsync();
     }
@@ -19,6 +20,11 @@ public class PatientRepository(AppDbContext context) : IPatientRepository
             .Where(patient => patient.Id == patientId)
             .OrderBy(patient => patient.Fullname)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<PatientModel?> GetPatientByEmailAsync(string email)
+    {
+        return await context.Patients.FirstOrDefaultAsync(p => p.Email == email);
     }
 
     public async Task CreatePatientAsync(PatientModel patientModel)
