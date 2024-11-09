@@ -22,5 +22,6 @@
 
     <ItemGroup>
       <None Remove="Repository\User" />
+      <None Remove="Domain\DTOs\Patient\**" />
     </ItemGroup>
 </Project>
