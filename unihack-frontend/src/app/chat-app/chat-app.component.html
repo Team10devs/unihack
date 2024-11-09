@@ -1,0 +1,42 @@
+<div class="chat-container">
+  <!-- Floating Chat Button -->
+  <button
+    [class.open]="isOpen"
+    class="chat-button"
+    (click)="toggleChat()">
+    <i class="material-icons">{{ isOpen ? 'close' : 'chat' }}</i>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isOpen">
+    <div class="chat-header">
+      <h3>Chat with {{ userRole === 'doctor' ? 'Patient' : 'Doctor' }}</h3>
+      <button (click)="toggleChat()">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+
+    <div class="chat-messages" #scrollMe>
+      <div *ngFor="let message of messages$ | async"
+           [class.own-message]="message.sender === userRole"
+           class="message">
+        <div class="message-content">
+          <p>{{ message.text }}</p>
+          <span class="timestamp">
+                {{ message.timestamp | date:'shortTime' }}
+              </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text"
+             [(ngModel)]="newMessage"
+             (keyup.enter)="sendMessage()"
+             placeholder="Type a message...">
+      <button (click)="sendMessage()">
+        <i class="material-icons">send</i>
+      </button>
+    </div>
+  </div>
+</div>
