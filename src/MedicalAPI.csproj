@@ -25,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\DTOs\Appointment\Pacient\" />
       <Folder Include="Service\Pacient\" />
     </ItemGroup>
 
