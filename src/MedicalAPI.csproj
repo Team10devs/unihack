@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <None Remove="Repository\User" />
-      <None Remove="Service\Appointment\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,15 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Service\Appointment\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Service\Appointment\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="Service\Appointment\**" />
+      <Compile Include="Service\Appointment\AppointmentService.cs" />
+      <Compile Include="Service\Appointment\IAppointmentService.cs" />
     </ItemGroup>
 
 </Project>

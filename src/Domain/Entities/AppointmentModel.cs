@@ -23,8 +23,7 @@ public class AppointmentModel : Entity
         DoctorModel doctorModel,
         DateTime appointmentStart, 
         TimeSpan appointmentDuration,
-        string notes,
-        AppointmentStatus appointmentStatus = AppointmentStatus.Scheduled
+        string notes
     )
     {
         return new AppointmentModel
@@ -32,7 +31,9 @@ public class AppointmentModel : Entity
             Patient = patientModel,
             Doctor = doctorModel,
             AppointmentDate = appointmentStart,
-            AppointmentDuration = appointmentStart.Add(appointmentDuration)
+            AppointmentDuration = appointmentDuration,
+            Notes = notes,
+            AppointmentStatus = AppointmentStatus.Scheduled
         };
 
     }
