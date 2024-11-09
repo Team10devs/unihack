@@ -1,0 +1,47 @@
+<body>
+<div class="calendar-container">
+    <app-add-event></app-add-event>
+
+  <div class="calendar-header">
+    <div class="view-controls">
+      <button (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">Month</button>
+      <button (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">Week</button>
+      <button (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">Day</button>
+    </div>
+
+    <h2>{{ viewDate | date: 'MMMM yyyy dd' }}</h2>
+
+    <div class="navigation-controls">
+      <button (click)="viewDate = addDays(viewDate, -1)">
+        Previous
+      </button>
+      <button (click)="viewDate = addDays(viewDate, 1)">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <div class="calendar-body">
+    <mwl-calendar-month-view
+      *ngIf="view === CalendarView.Month"
+      [viewDate]="viewDate"
+      [events]="events"
+      [activeDayIsOpen]="true">
+    </mwl-calendar-month-view>
+
+    <mwl-calendar-week-view
+      *ngIf="view === CalendarView.Week"
+      [viewDate]="viewDate"
+      [events]="events">
+    </mwl-calendar-week-view>
+
+    <mwl-calendar-day-view
+      *ngIf="view === CalendarView.Day"
+      [viewDate]="viewDate"
+      [events]="events"
+      [dayStartHour]="8"
+      [dayEndHour]="17">
+    </mwl-calendar-day-view>
+  </div>
+</div>
+</body>

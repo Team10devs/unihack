@@ -1,0 +1,140 @@
+/* General calendar container styles */
+.calendar-container {
+  font-family: "Inter var", sans-serif;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+view-controls{
+  padding:5px;
+}
+
+/* Header styling */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.calendar-header button {
+  background-color: var(--color4);
+  color: #ffffff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.calendar-header button:hover {
+  background-color: var(--color3);
+}
+
+/* Calendar specific styles */
+:host ::ng-deep {
+  /* Month view styles */
+  .cal-month-view {
+    .cal-header {
+      background-color: #f8f9fa;
+      padding: 10px 0;
+    }
+
+    .cal-cell-row {
+      border-color: #e9ecef;
+    }
+
+    .cal-day-cell {
+      min-height: 100px;
+    }
+
+    .cal-cell-top {
+      min-height: 78px;
+      flex: 1;
+    }
+
+    .cal-event {
+      background-color: #4a90e2;
+      border-radius: 4px;
+      padding: 2px 5px;
+      margin: 2px;
+      color: white;
+    }
+  }
+
+  /* Week view styles */
+  .cal-week-view {
+    .cal-header {
+      background-color: #f8f9fa;
+      padding: 10px 0;
+    }
+
+    .cal-hour-segment {
+      border-color: #e9ecef;
+    }
+
+    .cal-event {
+      background-color: #4a90e2;
+      border-radius: 4px;
+      padding: 2px 5px;
+      color: white;
+    }
+  }
+
+  /* Day view styles */
+  .cal-day-view {
+    .cal-hour-segment {
+      border-color: #e9ecef;
+    }
+
+    .cal-event {
+      background-color: #4a90e2;
+      border-radius: 4px;
+      padding: 2px 5px;
+      color: white;
+    }
+  }
+
+  /* Common styles for all views */
+  .cal-event-title {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .cal-today {
+    background-color: #e8f4fe !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .calendar-container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .calendar-header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .calendar-header h2 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}

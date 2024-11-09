@@ -3,6 +3,7 @@ using System;
 using MedicalAPI.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicalAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241109075815_changed appointmentend field from timespan to datetime")]
+    partial class changedappointmentendfieldfromtimespantodatetime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,14 +30,16 @@ namespace MedicalAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("AppointmentDate")
+                    b.Property<DateTime>("AppointmentEndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("AppointmentStartTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("AppointmentStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("DoctorId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Notes")
@@ -42,10 +47,13 @@ namespace MedicalAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PatientId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Appointments");
                 });
@@ -103,6 +111,10 @@ namespace MedicalAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
                     b.ToTable("Prescriptions");
                 });
 
@@ -112,6 +124,10 @@ namespace MedicalAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DeviceToken")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -146,6 +162,10 @@ namespace MedicalAPI.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DeviceToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DoctorId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -160,6 +180,10 @@ namespace MedicalAPI.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("text");
 
+                    b.Property<string>("MedicalHistory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
@@ -170,11 +194,45 @@ namespace MedicalAPI.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.AppointmentModel", b =>
+                {
+                    b.HasOne("MedicalAPI.Domain.Entities.User.DoctorModel", "Doctor")
+                        .WithMany("DoctorAppointments")
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("MedicalAPI.Domain.Entities.User.PatientModel", "Patient")
+                        .WithMany("PatientAppointments")
+                        .HasForeignKey("PatientId");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.MedicineModel", b =>
                 {
                     b.HasOne("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", null)
                         .WithMany("Medicine")
                         .HasForeignKey("PrescriptionModelId");
+                });
+
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", b =>
+                {
+                    b.HasOne("MedicalAPI.Domain.Entities.User.DoctorModel", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MedicalAPI.Domain.Entities.User.PatientModel", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("MedicalAPI.Domain.Entities.User.PatientModel", b =>
@@ -195,7 +253,14 @@ namespace MedicalAPI.Migrations
 
             modelBuilder.Entity("MedicalAPI.Domain.Entities.User.DoctorModel", b =>
                 {
+                    b.Navigation("DoctorAppointments");
+
                     b.Navigation("Patients");
+                });
+
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.User.PatientModel", b =>
+                {
+                    b.Navigation("PatientAppointments");
                 });
 #pragma warning restore 612, 618
         }
