@@ -41,12 +41,42 @@ namespace MedicalAPI.Controllers
             }
         }
         
-        [HttpGet(Name = "GetAllDoctors")]
+        [HttpGet("GetAllDoctors")]
         public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetAllDoctors()
         {
             var doctors = await _doctorService.GetAllAsync();
 
             return Ok(doctors.Select(MapDoctorResponse));
+        }
+        
+        [HttpGet("GetDoctorById")]
+        public async Task<ActionResult<DoctorResponse>> GetADoctorById(string id)
+        {
+            try
+            {
+                var doctor = await _doctorService.GetByIdAsync(id);
+                
+                return Ok(MapDoctorResponse(doctor));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet("GetByDoctorEmail")]
+        public async Task<ActionResult<DoctorResponse>> GetDoctorByEmail(string email)
+        {
+            try
+            {
+                var doctor = await _doctorService.GetDoctorByEmailAsync(email);
+                
+                return Ok(MapDoctorResponse(doctor));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         internal DoctorResponse MapDoctorResponse(DoctorModel doctorModel)
@@ -68,8 +98,16 @@ namespace MedicalAPI.Controllers
 
         internal PatientResponse MapPatientResponse(PatientModel patientModel)
         {
+            var doctor = MapDoctorResponse(patientModel.Doctor);
+            var appointmentResponses = new List<AppointmentResponse>();
+            
+            foreach (var appointment in patientModel.PatientAppointments)
+            {
+                appointmentResponses.Add(MapAppointmentResponse(appointment));
+            }
+            
             return new PatientResponse(patientModel.Id, patientModel.Fullname, patientModel.Email,
-                patientModel.Doctor.Id);
+                appointmentResponses, doctor);
         }
 
         internal AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
