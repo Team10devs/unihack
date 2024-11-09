@@ -1,10 +1,7 @@
 using MedicalAPI.Domain.DTOs.Appointment;
-using MedicalAPI.Domain.DTOs.Pacient;
+using MedicalAPI.Domain.DTOs.Patient;
 
 namespace MedicalAPI.Domain.DTOs.Doctor;
-
-using System;
-using System.Collections.Generic;
 
 public class DoctorResponse
 {
