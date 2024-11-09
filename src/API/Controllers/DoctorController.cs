@@ -29,7 +29,6 @@ namespace MedicalAPI.Controllers
 
             try
             {
-                // Înregistrează doctorul în Firebase și primește UID-ul acestuia
                 string firebaseUid = await _firebaseService.RegisterDoctorAsync(doctorRequest);
 
                 return Ok(new { Message = "Doctor registered successfully", FirebaseUid = firebaseUid });
