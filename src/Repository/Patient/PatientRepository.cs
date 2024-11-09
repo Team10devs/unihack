@@ -4,24 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI.Repository.Patient;
 
-public class PatientRepository : IPatientRepository
+public class PatientRepository(AppDbContext context) : IPatientRepository
 {
-    private readonly AppDbContext _context;
-
-    public PatientRepository(AppDbContext context)
-    {
-        _context = context;
-    }
     public async Task<List<PatientModel>> GetAllPatientsAsync()
     {
-        return await _context.Patients
+        return await context.Patients
             .Include( a => a.PatientAppointments)
             .ToListAsync();
     }
 
     public async Task<PatientModel?> GetPatientByIdAsync(string patientId)
     {
-        return await _context.Patients
+        return await context.Patients
             .Where(patient => patient.Id == patientId)
             .OrderBy(patient => patient.Fullname)
             .FirstOrDefaultAsync();
@@ -29,8 +23,8 @@ public class PatientRepository : IPatientRepository
 
     public async Task CreatePatientAsync(PatientModel patientModel)
     {
-        await _context.Patients.AddAsync(patientModel);
-        await _context.SaveChangesAsync();
+        await context.Patients.AddAsync(patientModel);
+        await context.SaveChangesAsync();
     }
     
 }

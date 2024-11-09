@@ -17,4 +17,23 @@ public class AppointmentModel : Entity
     {
         
     }
+    
+    public static async Task<AppointmentModel> CreateAppointmentAsync(
+        PatientModel patientModel,
+        DoctorModel doctorModel,
+        DateTime appointmentStart, 
+        TimeSpan appointmentDuration,
+        string notes,
+        AppointmentStatus appointmentStatus = AppointmentStatus.Scheduled
+    )
+    {
+        return new AppointmentModel
+        {
+            Patient = patientModel,
+            Doctor = doctorModel,
+            AppointmentDate = appointmentStart,
+            AppointmentDuration = appointmentStart.Add(appointmentDuration)
+        };
+
+    }
 }

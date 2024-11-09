@@ -4,21 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI.Repository.Doctor;
 
-public class DoctorRepository : IDoctorRepository
+public class DoctorRepository(AppDbContext context) : IDoctorRepository
 {
-    private readonly AppDbContext _context;
-
-    public DoctorRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task AddDoctorAsync(DoctorModel doctor)
     {
         try
         {
-            _context.Doctors.Add(doctor);  
-            await _context.SaveChangesAsync();
+            context.Doctors.Add(doctor);  
+            await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -28,6 +21,6 @@ public class DoctorRepository : IDoctorRepository
 
     public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
     {
-        return await _context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
+        return await context.Doctors.FirstOrDefaultAsync(d => d.Id == doctorId);
     }
 }
