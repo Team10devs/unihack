@@ -19,7 +19,7 @@ public class DoctorRepository(AppDbContext context) : IDoctorRepository
         }
     }
 
-    public async Task<DoctorModel> GetDoctorByIdAsync(string doctorId)
+    public async Task<DoctorModel?> GetDoctorByIdAsync(string doctorId)
     {
         var doctor = await context.Doctors
             .Include( a=> a.DoctorAppointments)
