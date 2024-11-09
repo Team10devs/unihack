@@ -53,9 +53,8 @@ export class LoginPageComponent {
     if (this.loginForm.valid) {
       console.log('Login form submitted');
       this.loginPageService.login(this.loginForm.get(['email'])?.value,this.loginForm.get(['password'])?.value).subscribe(temp => {
-        console.log(temp.userId);
         this.auth.setUserId(temp.userId);
-        sessionStorage.removeItem('userUID');
+        this.auth.setUserRole$(temp.userType);
         if(temp.userType ==='Doctor'){
           this.router.navigate(['/calendar-page'])
         }
