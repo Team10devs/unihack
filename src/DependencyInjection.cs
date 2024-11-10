@@ -10,6 +10,7 @@ using MedicalAPI.Service.Firebase;
 using MedicalAPI.Service.Firebase.Appointment;
 using MedicalAPI.Service.Firebase.Doctor;
 using MedicalAPI.Service.Firebase.Patient;
+using MedicalAPI.Service.Firebase.Prescription;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAPI;
@@ -37,6 +38,8 @@ public static class DependencyInjection
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IAppointmentService,AppointmentService>();
         
+
+        services.AddScoped<IPrescriptionService, PrescriptionService>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IDoctorService, DoctorService>();
         

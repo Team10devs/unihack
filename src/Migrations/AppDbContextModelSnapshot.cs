@@ -3,7 +3,6 @@ using System;
 using MedicalAPI.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicalAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241109144045_removed startdate and enddate for prescriptions")]
-    partial class removedstartdateandenddateforprescriptions
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,34 +55,6 @@ namespace MedicalAPI.Migrations
                     b.ToTable("Appointments");
                 });
 
-            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.MedicineModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Dosage")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FrequencyPerDay")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("NumberOfDays")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PrescriptionModelId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PrescriptionModelId");
-
-                    b.ToTable("MedicineModel");
-                });
-
             modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", b =>
                 {
                     b.Property<string>("Id")
@@ -103,13 +72,72 @@ namespace MedicalAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PatientModelId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PdfId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("PatientModelId");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("PdfId");
 
                     b.ToTable("Prescriptions");
+                });
+
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.Medicine.MedicineModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Dosage")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FrequencyPerDay")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrescriptionModelId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrescriptionModelId");
+
+                    b.ToTable("Medicines");
+                });
+
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.PrescriptionPdf", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrescriptionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrescriptionPdfs");
                 });
 
             modelBuilder.Entity("MedicalAPI.Domain.Entities.User.DoctorModel", b =>
@@ -118,6 +146,10 @@ namespace MedicalAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -162,7 +194,6 @@ namespace MedicalAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DoctorId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -205,39 +236,31 @@ namespace MedicalAPI.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.MedicineModel", b =>
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", b =>
+                {
+                    b.HasOne("MedicalAPI.Domain.Entities.User.PatientModel", null)
+                        .WithMany("PatientPrescriptions")
+                        .HasForeignKey("PatientModelId");
+
+                    b.HasOne("MedicalAPI.Domain.Entities.PrescriptionPdf", "Pdf")
+                        .WithMany()
+                        .HasForeignKey("PdfId");
+
+                    b.Navigation("Pdf");
+                });
+
+            modelBuilder.Entity("MedicalAPI.Domain.Entities.Medicine.MedicineModel", b =>
                 {
                     b.HasOne("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", null)
                         .WithMany("Medicine")
                         .HasForeignKey("PrescriptionModelId");
                 });
 
-            modelBuilder.Entity("MedicalAPI.Domain.Entities.Entity.Documents.PrescriptionModel", b =>
-                {
-                    b.HasOne("MedicalAPI.Domain.Entities.User.DoctorModel", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MedicalAPI.Domain.Entities.User.PatientModel", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("MedicalAPI.Domain.Entities.User.PatientModel", b =>
                 {
                     b.HasOne("MedicalAPI.Domain.Entities.User.DoctorModel", "Doctor")
                         .WithMany("Patients")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DoctorId");
 
                     b.Navigation("Doctor");
                 });
@@ -257,6 +280,8 @@ namespace MedicalAPI.Migrations
             modelBuilder.Entity("MedicalAPI.Domain.Entities.User.PatientModel", b =>
                 {
                     b.Navigation("PatientAppointments");
+
+                    b.Navigation("PatientPrescriptions");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,6 @@
+using MedicalAPI.Domain.Entities;
 using MedicalAPI.Domain.Entities.Entity.Documents;
+using MedicalAPI.Domain.Entities.Medicine;
 using MedicalAPI.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,5 +18,6 @@ public class AppDbContext : DbContext
     public DbSet<AppointmentModel> Appointments { get; set; } 
     
     public DbSet<PrescriptionModel> Prescriptions { get; set; } 
-    
+    public DbSet<PrescriptionPdf> PrescriptionPdfs { get; set; }
+    public DbSet<MedicineModel> Medicines { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using MedicalAPI.Domain.Entities.Entity.Documents;
+using MedicalAPI.Domain.Entities.Entity.Documents;
 
 namespace MedicalAPI.Domain.Entities.User;
 

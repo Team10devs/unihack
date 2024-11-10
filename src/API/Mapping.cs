@@ -31,7 +31,7 @@ public static class Mapping
         }
         else throw new Exception("Mapping Doctor Appointments");
             
-        return new DoctorResponse(doctorModel.Id,doctorModel.Email, doctorModel.Fullname, appointmentResponses, patientResponses);
+        return new DoctorResponse(doctorModel.Id,doctorModel.Email, doctorModel.Fullname, doctorModel.Code, appointmentResponses, patientResponses);
     }
 
     public static PatientResponse MapPatientResponse(PatientModel patientModel)
@@ -49,7 +49,7 @@ public static class Mapping
         //else throw new Exception("Mapping Patient Appointments");
             
         return new PatientResponse(patientModel.Id, patientModel.Fullname, patientModel.Email,
-            appointmentResponses, patientModel.Doctor != null ? patientModel.Doctor.Id : "");
+            patientModel.Gender, patientModel.BirthDate, patientModel.MedicalHistory, appointmentResponses, patientModel.Doctor != null ? patientModel.Doctor.Id : "");
     }   
 
     public static AppointmentResponse MapAppointmentResponse(AppointmentModel appointmentModel)
