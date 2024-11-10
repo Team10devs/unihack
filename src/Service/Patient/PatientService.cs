@@ -26,5 +26,14 @@ public class PatientService(IPatientRepository patientRepository) : IPatientServ
 
         return patient;
     }
-    
+
+    public async Task<PatientModel> GetPatientByIdAsync(string id)
+    {
+        var patient = await patientRepository.GetPacientByIdAsync(id);
+
+        if (patient is null)
+            throw new Exception($"Patient with id {id} does not exist.");
+
+        return patient;
+    }
 }

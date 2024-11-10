@@ -52,7 +52,7 @@ public class PrescriptionService : IPrescriptionService
             }
             
             var prescriptionModel =
-                new PrescriptionModel(patient.Id, doctor.Id, prescription.Diagnostic, medicines);
+                new PrescriptionModel(patient, doctor.Id, prescription.Diagnostic, medicines);
             
             QuestPDF.Settings.License = LicenseType.Community;
             using MemoryStream memoryStream = new MemoryStream();
@@ -160,8 +160,10 @@ public class PrescriptionService : IPrescriptionService
 
     public async Task<IEnumerable<PrescriptionModel>> GetPatientPrescriptions(string patientId)
     {
-        return await _context.Prescriptions.Include(p => p.Medicine)
-            .Where(p => p.PatientId == patientId)
+        return await _context.Prescriptions
+            .Include(p => p.Medicine)
+            .Include(p=>p.Patient)
+            .Where(p => p.Patient.Id == patientId)
             .ToListAsync();
     }
 
