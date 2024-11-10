@@ -290,6 +290,7 @@
 @layer primeng {
   * {
     box-sizing: border-box;
+    padding: 5px;
   }
 
   .p-component {
@@ -6554,5 +6555,12 @@
   .p-steps .p-steps-item.p-highlight .p-steps-number {
     background: #6366F1;
     color: #ffffff;
+  }
+
+  .flex.justify-content-between.align-items-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
   }
 }

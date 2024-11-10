@@ -1,6 +1,7 @@
 export interface IMedicineResponse{
-  ID: string,
-  Name:string,
-  Dosage : number;
-  FrequencyPerDay : number;
+  name:string,
+  dosage : number;
+  frequencyPerDay : number;
+  startDate ?: string;
+  endDate ?:string;
 }

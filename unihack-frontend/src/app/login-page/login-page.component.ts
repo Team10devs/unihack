@@ -39,6 +39,7 @@ export class LoginPageComponent {
   loginForm: FormGroup;
   logoUrl: string = '';
 
+
   constructor(private formBuilder: FormBuilder,private loginPageService : LoginPageService,private router :Router,private auth : AuthService) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,10 +50,14 @@ export class LoginPageComponent {
   private userIdSubject = new BehaviorSubject<string | null>(localStorage.getItem('userUID'));
   userId$ = this.userIdSubject.asObservable();
 
+
   onSubmit(): void {
+    this.auth.userRole$.subscribe()
     if (this.loginForm.valid) {
       console.log('Login form submitted');
       this.loginPageService.login(this.loginForm.get(['email'])?.value,this.loginForm.get(['password'])?.value).subscribe(temp => {
+        console.log(temp);
+        console.log(temp.userId);
         this.auth.setUserId(temp.userId);
         this.auth.setUserRole$(temp.userType);
         console.log(temp.userType);
