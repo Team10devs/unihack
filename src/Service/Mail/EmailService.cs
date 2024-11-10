@@ -91,10 +91,14 @@ public class EmailService : IEmailService
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $@"
             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-                <h1 style='color: #333;'>Salut, {HttpUtility.HtmlEncode(patient.Fullname)}!</h1>
-                <p style='line-height: 1.6;'>Doctorul tău a emis o nouă prescripție pentru tine. Găsești documentul atașat la acest email.</p>
-                <p style='line-height: 1.6;'>Te rugăm să o consulți și să urmezi instrucțiunile indicate.</p>
-                <p style='line-height: 1.6;'>Cu stimă,<br>Dr. {HttpUtility.HtmlEncode(doctor.Fullname)}</p>
+            <div style='text-align: center; margin-bottom: 30px;'>
+            <img height=""105px"" src=""https://imgur.com/wdKQoXQ.png"" alt=""Logo"" />
+             </div>
+                <h1 style='color: #333;'>Hello, {HttpUtility.HtmlEncode(patient.Fullname)}!</h1>
+                <p style='line-height: 1.6;'>Your doctor emitted a new prescription for you. The document is attached to this email.</p>
+                <p style='line-height: 1.6;'>Please consult it and follow the indicated instructions.</p>
+                <p style='line-height: 1.6;'>Respectfully,<br>Dr. {HttpUtility.HtmlEncode(doctor.Fullname)}</p>
+
             </div>";
 
         // Attach the PDF
