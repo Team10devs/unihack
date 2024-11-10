@@ -107,6 +107,14 @@ export class PatientTableComponent implements OnInit{
 
 
   openNew() {
+    this. patient = {
+      pacientId : '',
+      pacientNamem: '',  // Initialize with default values
+      birthDate: '',
+      gender: '',
+      pacientEmail: '',
+      medicalHistory: ''
+    };
     this.editMode = false;
     this.submitted = false;
     this.patientDialog = true;

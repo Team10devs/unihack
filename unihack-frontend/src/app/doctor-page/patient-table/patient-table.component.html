@@ -119,19 +119,21 @@
                [ngClass]="{'ng-invalid ng-dirty': submitted && !patient.pacientNamem}"/>
         <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.pacientNamem">Name is required.</small>
       </div>
+      <!-- Birth Date (Optional) -->
       <div class="field">
         <label for="birthDate">Birth Date</label>
         <p-calendar id="birthDate" [(ngModel)]="patient.birthDate" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
       </div>
+      <!-- Gender (Optional) -->
       <div class="field">
         <label for="gender">Gender</label>
         <p-dropdown id="gender" [(ngModel)]="patient.gender" [options]="genderOptions" placeholder="Select Gender" />
       </div>
+      <!-- Email (Optional) -->
       <div class="field">
         <label for="pacientEmail">Email</label>
-        <input type="email" pInputText id="pacientEmail" [(ngModel)]="patient.pacientEmail" required
+        <input type="email" pInputText id="pacientEmail" [(ngModel)]="patient.pacientEmail"
                [ngClass]="{'ng-invalid ng-dirty': submitted && !patient.pacientEmail}"/>
-        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.pacientEmail">Email is required.</small>
       </div>
       <div class="field">
         <label for="medicalHistory">Medical History</label>

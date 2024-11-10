@@ -3,6 +3,7 @@ import {IAppointment} from './IAppointment';
 import {UserRole} from './UserRole';
 
 export interface IPatient{
+  patientId: string;
   BirthDate : string;
   Doctor : IDoctor;
   MedicalHistory: string;
