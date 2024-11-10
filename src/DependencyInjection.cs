@@ -9,6 +9,7 @@ using MedicalAPI.Repository.User;
 using MedicalAPI.Service.Firebase;
 using MedicalAPI.Service.Firebase.Appointment;
 using MedicalAPI.Service.Firebase.Doctor;
+using MedicalAPI.Service.Firebase.Mail;
 using MedicalAPI.Service.Firebase.Patient;
 using MedicalAPI.Service.Firebase.Prescription;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,9 @@ public static class DependencyInjection
         
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IAppointmentService,AppointmentService>();
+
+        services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));
+        services.AddScoped<IEmailService, EmailService>();
         
 
         services.AddScoped<IPrescriptionService, PrescriptionService>();

@@ -3,7 +3,9 @@ using MedicalAPI.Domain.Entities.Entity.Documents;
 using MedicalAPI.Domain.Entities.Medicine;
 using MedicalAPI.Domain.Entities.Prescription;
 using MedicalAPI.Repository.Database;
+using MedicalAPI.Service.Firebase.Mail;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Security;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -13,10 +15,12 @@ namespace MedicalAPI.Service.Firebase.Prescription;
 public class PrescriptionService : IPrescriptionService
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public PrescriptionService(AppDbContext context)
+    public PrescriptionService(AppDbContext context,IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task<PrescriptionModel> GeneratePrescription(PrescriptionRequest prescription)
@@ -149,6 +153,8 @@ public class PrescriptionService : IPrescriptionService
 
             _context.Prescriptions.Add(prescriptionModel);
             await _context.SaveChangesAsync();
+            
+            await _emailService.SendEmailAsync(doctor, patient, prescriptionPdf);
             
             return prescriptionModel;
         }
