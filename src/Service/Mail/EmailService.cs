@@ -85,9 +85,9 @@ public class EmailService : IEmailService
         message.To.Add(new MailboxAddress(patient.Fullname, patient.Email));
         
         // Set Subject
-        message.Subject = "Prescripție Medicală";
+        message.Subject = "Medical Prescription";
 
-        // Create the HTML body
+        // Create the HTML bodys
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $@"
             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
