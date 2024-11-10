@@ -3,6 +3,8 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using MedicalAPI.Domain.Entities;
 using MedicalAPI.Domain.Enums;
+using MedicalAPI.Repository.Doctor;
+using MedicalAPI.Repository.Patient;
 using MedicalAPI.Repository.User;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +16,17 @@ public class MessageController : ControllerBase
 {
     private readonly FirebaseMessaging _firebaseMessaging;
     private readonly IUserRepository _userRepository;
-    public MessageController(FirebaseMessaging firebaseMessaging, IUserRepository userRepository)
+    private readonly IPatientRepository _patientRepository;
+    private readonly IDoctorRepository _doctorRepository;
+    public MessageController(FirebaseMessaging firebaseMessaging, 
+        IUserRepository userRepository,
+        IPatientRepository patientRepository,
+        IDoctorRepository doctorRepository)
     {
         _firebaseMessaging = firebaseMessaging;
         _userRepository = userRepository;
+        _patientRepository = patientRepository;
+        _doctorRepository = doctorRepository;
     }
 
     [HttpPost("send-message")]
@@ -66,9 +75,19 @@ public class MessageController : ControllerBase
 
     private async Task<string> GetDeviceTokenAsync(string userId)
     {
-        // Implement logic to retrieve the device token for the given user ID
-        // This could involve querying a database or other storage mechanism
-        // to get the token associated with the user
-        return "device_token_for_user_" + userId;
+        var patient = await _patientRepository.GetPacientByIdAsync(userId);
+        if (patient != null && !string.IsNullOrEmpty(patient.DeviceToken))
+        {
+            return patient.DeviceToken;
+        }
+        
+        var doctor = await _doctorRepository.GetDoctorByIdAsync(userId);
+        if (doctor != null && !string.IsNullOrEmpty(doctor.DeviceToken))
+        {
+            return doctor.DeviceToken;
+        }
+        
+        throw new Exception("User does not exist or device token is missing");
     }
+
 }

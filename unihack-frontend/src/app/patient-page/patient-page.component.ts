@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {IPatient} from '../models/IPatient';
 import {Table, TableModule} from 'primeng/table';
 import {Button, ButtonDirective} from 'primeng/button';
@@ -10,6 +10,12 @@ import {PaginatorModule} from 'primeng/paginator';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {IPrescriptionResponse} from '../models/IPrescriptionResponse';
 import {ConfirmationService, MessageService} from 'primeng/api';
+import {PatientPageService} from './patient-page.service';
+import {ActivatedRoute} from '@angular/router';
+import {PatientTableService} from '../doctor-page/patient-table/patient-table.service';
+import {HttpClientModule} from '@angular/common/http';
+import {InputTextModule} from 'primeng/inputtext';
+import {InputNumberModule} from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-patient-page',
@@ -23,105 +29,86 @@ import {ConfirmationService, MessageService} from 'primeng/api';
     NgForOf,
     PaginatorModule,
     ButtonDirective,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    HttpClientModule,
+    InputTextModule,
+    InputNumberModule
   ],
-  providers:[MessageService,ConfirmationService] ,
+  providers: [
+    MessageService,
+    ConfirmationService,
+    PatientTableService,
+    PatientPageService  // Add the service here
+  ],
   templateUrl: './patient-page.component.html',
   styleUrl: './patient-page.component.css'
 })
-export class PatientPageComponent {
-@Input() patient !: IPatient;
-
+export class PatientPageComponent implements OnInit{
+  @Input() patient!: IPatient;
   @ViewChild('dt') dt: Table | undefined;
 
   prescriptions: IPrescriptionResponse[] = [];
   selectedPrescriptions: IPrescriptionResponse[] = [];
   prescription: IPrescriptionResponse = {
-    PatientId: '',
-    Diagnostic: '',
-    Medicine: []
+    patientId: '',
+    diagnostic: '',
+    medicine: []
   };
   prescriptionDialog: boolean = false;
   editMode: boolean = false;
   loading: boolean = false;
   searchValue: string = '';
   submitted: boolean = false;
+  patientId: string | null = null;
 
   constructor(
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private patientPageService: PatientPageService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.loadPrescriptions();
+    // Get the patient ID first
+    this.patientId = this.route.snapshot.paramMap.get('id');
+    console.log('Patient ID:', this.patientId);
+
+    // Then load prescriptions
+    if (this.patientId) {
+      this.loadPrescriptions();
+    }
   }
 
   loadPrescriptions() {
     this.loading = true;
-    this.prescriptions = [
-      {
-        PatientId: 'P12345',
-        Diagnostic: 'Hypertension',
-        Medicine: [
-          {
-            ID: 'string',
-            Name: 'Amlodipine',
-            Dosage: 5,
-            FrequencyPerDay: 1
-          },
-          {
-            ID: 'string',
 
-            Name: 'Lisinopril',
-            Dosage: 10,
-            FrequencyPerDay: 1
+    if (this.patientId) {
+      this.patientPageService.getPrescriptionByPatientId(this.patientId)
+        .subscribe({
+          next: (data) => {
+            this.prescriptions = data;
+            this.loading = false;
           },
-          {
-            ID: 'string',
-
-            Name: 'Glibenclamide',
-            Dosage: 5,
-            FrequencyPerDay: 1
-          },
-          {
-            ID: 'string',
-
-            Name: 'Glibenclamide',
-            Dosage: 5,
-            FrequencyPerDay: 1
+          error: (error) => {
+            console.error('Error loading prescriptions:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load prescriptions',
+              life: 3000
+            });
+            this.loading = false;
           }
-        ]
-      },
-      {
-        PatientId: 'P67890',
-        Diagnostic: 'Diabetes Type 2',
-        Medicine: [
-          {
-            ID: 'string',
-            Name: 'Metformin',
-            Dosage: 500,
-            FrequencyPerDay: 2
-          },
-          {
-            ID: 'string',
-
-            Name: 'Glibenclamide',
-            Dosage: 5,
-            FrequencyPerDay: 1
-          }
-        ]
-      },
-      ]
-    // Implement your service call here
-    // this.prescriptionService.getPrescriptions().subscribe(...)
-    this.loading = false;
+        });
+    }
   }
+
 
   openNew() {
     this.prescription = {
-      PatientId: '',
-      Diagnostic: '',
-      Medicine: []
+      patientId: '',
+      diagnostic: '',
+      medicine: []
     };
     this.editMode = false;
     this.prescriptionDialog = true;
@@ -152,16 +139,15 @@ export class PatientPageComponent {
   }
 
   addMedicine() {
-    this.prescription.Medicine.push({
-      ID: '',
-      Name: '',
-      Dosage: 0,
-      FrequencyPerDay: 1
+    this.prescription.medicine.push({
+      name: '',
+      dosage: 0,
+      frequencyPerDay: 1
     });
   }
 
   removeMedicine(index: number) {
-    this.prescription.Medicine.splice(index, 1);
+    this.prescription.medicine.splice(index, 1);
   }
 
   hideDialog() {
@@ -172,18 +158,41 @@ export class PatientPageComponent {
   savePrescription() {
     this.submitted = true;
 
-    if (this.prescription.PatientId?.trim() && this.prescription.Diagnostic?.trim()) {
+    this.prescription.medicine.forEach(med => {
+      if (med.startDate) {
+        med.startDate = new Date(med.startDate).toISOString();
+      }
+      if (med.endDate) {
+        med.endDate = new Date(med.endDate).toISOString();
+      }
+    });
+
+    console.log(this.prescription);
+    if(this.patientId)
+    this.prescription.patientId = this.patientId;
+    this.patientPageService.postPrescription(this.prescription).subscribe(temp =>{
+      const blobUrl = window.URL.createObjectURL(temp);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'prescription.pdf'; // Set the download filename
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(blobUrl);
+    });
+
+    if (this.prescription.patientId?.trim() && this.prescription.diagnostic?.trim()) {
       if (this.editMode) {
-        // Implement update logic
+        this.patientPageService.postPrescription(this.prescription);
       } else {
-        // Implement create logic
+        this.patientPageService.postPrescription(this.prescription);
       }
 
       this.prescriptionDialog = false;
       this.prescription = {
-        PatientId: '',
-        Diagnostic: '',
-        Medicine: []
+        patientId: '',
+        diagnostic: '',
+        medicine: []
       };
     }
   }
@@ -197,9 +206,18 @@ export class PatientPageComponent {
     this.searchValue = '';
   }
 
-  viewDetails(prescription: IPrescriptionResponse) {
-    // Implement view details logic
+  openPdf(presctiptionId :string){
+    this.patientPageService.getPdf(presctiptionId).subscribe({
+      next: (response: Blob) => {
+        const blobUrl = window.URL.createObjectURL(response);
+        window.open(blobUrl, '_blank');
+      },
+      error: (error) => {
+        console.error('Error fetching PDF:', error);
+      }
+    });
   }
 
-
+  viewDetails(prescription: IPrescriptionResponse) {
+  }
 }
