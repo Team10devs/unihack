@@ -8,6 +8,7 @@ import {ChatAppComponent} from './chat-app/chat-app.component';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {AuthService} from './AuthService';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -21,9 +22,14 @@ export class AppComponent implements OnInit {
   constructor(private renderer: Renderer2, private router: Router, private auth:AuthService) {}
 
 userId :string | null  = null;
-
+userRole : string | null = null;
   ngOnInit(): void {
     this.userId = localStorage.getItem('userUID');
+
+    this.auth.userRole$.subscribe(temp=>{
+        this.userRole =temp;
+        this.setMenuItems();
+    });
 
     this.auth.userId$.subscribe((id) => {
       this.userId = id;
@@ -31,14 +37,26 @@ userId :string | null  = null;
       this.loadScript('https://cdn.botpress.cloud/webchat/v2.2/inject.js', () => {
         this.loadScript('https://files.bpcontent.cloud/2024/11/09/08/20241109084554-UXGPSC7L.js');
       });
+  }
 
-
+  private setMenuItems(): void {
     this.items = [
-      {label: 'Home', icon: 'pi pi-fw pi-home'},
-      {label: 'Calendar', icon: 'pi pi-fw pi-calendar',routerLink : 'calendar-page'},
-      {label: 'Patient List', icon: 'pi pi-fw pi-calendar', routerLink: 'patient-page',},
-      {label: 'Profile', icon: 'pi pi-fw pi pi-user',routerLink:'profile-page' }
+      { label: 'Home', icon: 'pi pi-fw pi-home' },
+      { label: 'Calendar', icon: 'pi pi-fw pi-calendar', routerLink: 'calendar-page' }
     ];
+
+    // Add 'Patient List' only if the user role is 'doctor'
+    if (this.userRole === 'Doctor') {
+      this.items.push({
+        label: 'Patient List',
+        icon: 'pi pi-fw pi-users',
+        routerLink: 'patient-page',
+      });
+    }
+
+    this.items.push(
+      { label: 'Profile', icon: 'pi pi-fw pi-user', routerLink: 'profile-page' }
+    )
   }
 
   private loadScript(src: string, callback?: () => void): void {

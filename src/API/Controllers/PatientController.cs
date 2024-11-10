@@ -39,4 +39,19 @@ public class PatientController(IPatientService _patientService) : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [HttpGet("PatientById")]
+    public async Task<ActionResult<PatientResponse>> GetPatientById(string id)
+    {
+        try
+        {
+            var patient = await _patientService.GetPatientByIdAsync(id);
+            
+            return Ok(Mapping.MapPatientResponse(patient));
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

@@ -55,7 +55,6 @@ public class PatientRepository : IPatientRepository
     {
         return await _context.Patients
             .Where(patient => patient.Id == patientId)
-            .OrderBy(patient => patient.Fullname)
             .FirstOrDefaultAsync();
     }
     
