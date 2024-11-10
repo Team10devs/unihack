@@ -13,6 +13,7 @@ export class PatientTableService{
 
   getPatientsByDoctorId(id : string) : Observable<IPatientResponse[]>{
    const apiUrl = `${environments.apiUrl}/api/Patient/PatientsByDoctorId?doctorId=${id}`;
+   console.log(this.http.get<IPatientResponse[]>(apiUrl))
    return  this.http.get<IPatientResponse[]>(apiUrl);
   }
 }

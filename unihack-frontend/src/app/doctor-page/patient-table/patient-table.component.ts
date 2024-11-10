@@ -8,12 +8,15 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button, ButtonDirective } from 'primeng/button';
 import { ChipsModule } from 'primeng/chips';
-import { NgClass, NgIf } from '@angular/common';
+import {DatePipe, NgClass, NgIf} from '@angular/common';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { PatientTableService } from './patient-table.service';
 import { AuthService } from '../../AuthService';
 import { IPatientResponse } from '../../models/IPatientResponse';
-import { HttpClientModule } from '@angular/common/http'; // Add this import
+import { HttpClientModule } from '@angular/common/http';
+import {Observable, tap} from 'rxjs';
+import {environments} from '../../environment/environment';
+import {CalendarModule} from 'primeng/calendar'; // Add this import
 
 @Component({
   selector: 'app-patient-table',
@@ -31,7 +34,10 @@ import { HttpClientModule } from '@angular/common/http'; // Add this import
     NgIf,
     NgClass,
     RouterOutlet,
-    HttpClientModule  // Add HttpClientModule to imports
+    HttpClientModule,
+    CalendarModule,
+    DatePipe,
+    // Add HttpClientModule to imports
   ],
   providers: [
     MessageService,
@@ -69,19 +75,36 @@ export class PatientTableComponent implements OnInit{
     this.loadPatients();
   }
 
-
   loadPatients() {
     this.loading = true;
 
-    this.authService.userId$.subscribe(temp =>{
-      if(temp)
-      this.patientTableService.getPatientsByDoctorId(temp).subscribe(data=>{
-        console.log()
-        this.patients = data;
-      })
-
-    })
+    // Using proper subscription handling
+    this.authService.userId$.subscribe({
+      next: (userId) => {
+        if (userId) {
+          this.patientTableService.getPatientsByDoctorId(userId).subscribe({
+            next: (data) => {
+              this.patients = data;
+              console.log('Received patients:', this.patients);
+              this.loading = false;
+            },
+            error: (error) => {
+              console.error('Error fetching patients:', error);
+              this.loading = false;
+            },
+            complete: () => {
+              this.loading = false;
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error getting userId:', error);
+        this.loading = false;
+      }
+    });
   }
+
 
   openNew() {
     this.editMode = false;
@@ -95,8 +118,8 @@ export class PatientTableComponent implements OnInit{
     this.patientDialog = true;
   }
 
-  goToDetails(patient: { id: number }) {
-    this.router.navigate(['/patient-page/patient', patient.id]);
+  goToDetails(patient : IPatientResponse) {
+    this.router.navigate(['/patient-page/patient', patient.pacientId]);
   }
 
   deletePatient(patient: IPatientResponse) {
