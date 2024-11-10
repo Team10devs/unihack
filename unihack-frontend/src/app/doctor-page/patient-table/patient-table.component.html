@@ -117,11 +117,11 @@
     <ng-container *ngIf="editMode">
       <div class="field">
         <label for="fullName">Full Name</label>
-        <input type="text" pInputText id="fullName" [(ngModel)]="patient.fullName" required />
+        <input type="text" pInputText id="fullName" [(ngModel)]="patient.pacientNamem" required />
       </div>
       <div class="field">
         <label for="age">Age</label>
-        <p-inputNumber id="age" [(ngModel)]="patient.age" [min]="0" [max]="150" />
+        <p-inputNumber id="age" [(ngModel)]="patient.birthDate" [min]="0" [max]="150" />
       </div>
       <div class="field">
         <label for="gender">Gender</label>
@@ -129,7 +129,7 @@
       </div>
       <div class="field">
         <label for="editEmail">Email</label>
-        <input type="email" pInputText id="editEmail" [(ngModel)]="patient.email" required />
+        <input type="email" pInputText id="editEmail" [(ngModel)]="patient.pacientEmail" required />
       </div>
       <div class="field">
         <label for="medicalHistory">Medical History</label>
@@ -144,10 +144,10 @@
         <input type="email"
                pInputText
                id="newEmail"
-               [(ngModel)]="patient.email"
+               [(ngModel)]="patient.pacientEmail"
                required
-               [ngClass]="{'ng-invalid ng-dirty': submitted && !patient.email}"/>
-        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.email">Email is required.</small>
+               [ngClass]="{'ng-invalid ng-dirty': submitted && !patient.pacientEmail}"/>
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !patient.pacientEmail">Email is required.</small>
       </div>
     </ng-container>
   </ng-template>

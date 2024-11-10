@@ -1,27 +1,19 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {Table, TableModule} from 'primeng/table';
-import {FormsModule} from '@angular/forms';
-import {DialogModule} from 'primeng/dialog';
-import {PaginatorModule} from 'primeng/paginator';
-import {Ripple} from 'primeng/ripple';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {Button, ButtonDirective} from 'primeng/button';
-import {ChipsModule} from 'primeng/chips';
-import {NgClass, NgIf} from '@angular/common';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
-import {PatientTableService} from './patient-table.service';
-import {AuthService} from '../../AuthService';
-import {IPatient} from '../../models/IPatient';
-
-interface Patient {
-  id?: number;
-  fullName: string;
-  age: number;
-  gender: string;
-  email: string;
-  medicalHistory: string;
-}
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Table, TableModule } from 'primeng/table';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { PaginatorModule } from 'primeng/paginator';
+import { Ripple } from 'primeng/ripple';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button, ButtonDirective } from 'primeng/button';
+import { ChipsModule } from 'primeng/chips';
+import { NgClass, NgIf } from '@angular/common';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { PatientTableService } from './patient-table.service';
+import { AuthService } from '../../AuthService';
+import { IPatientResponse } from '../../models/IPatientResponse';
+import { HttpClientModule } from '@angular/common/http'; // Add this import
 
 @Component({
   selector: 'app-patient-table',
@@ -38,9 +30,14 @@ interface Patient {
     ChipsModule,
     NgIf,
     NgClass,
-    RouterOutlet
+    RouterOutlet,
+    HttpClientModule  // Add HttpClientModule to imports
   ],
-  providers:[MessageService,ConfirmationService] ,
+  providers: [
+    MessageService,
+    ConfirmationService,
+    PatientTableService  // Add the service to providers
+  ],
   templateUrl: './patient-table.component.html',
   styleUrl: './patient-table.component.css'
 })
@@ -50,9 +47,9 @@ export class PatientTableComponent implements OnInit{
   @ViewChild('dt') dt!: Table;
 
   patientDialog: boolean = false;
-  patients: IPatient[] = [];
-  patient: Patient = this.initializePatient();
-  selectedPatients: Patient[] = [];
+  patients: IPatientResponse[] = [];
+  patient !: IPatientResponse;
+  selectedPatients: IPatientResponse[] = [];
   submitted: boolean = false;
   editMode: boolean = false;
   loading: boolean = false;
@@ -72,22 +69,13 @@ export class PatientTableComponent implements OnInit{
     this.loadPatients();
   }
 
-  initializePatient(): Patient {
-    return {
-      fullName: '',
-      age: 0,
-      gender: '',
-      email: '',
-      medicalHistory: ''
-    };
-  }
 
   loadPatients() {
     this.loading = true;
 
     this.authService.userId$.subscribe(temp =>{
       if(temp)
-      this.patientTableService.getPatientsByDoctorId(temp).subscribe(data=>{\
+      this.patientTableService.getPatientsByDoctorId(temp).subscribe(data=>{
         console.log()
         this.patients = data;
       })
@@ -96,13 +84,12 @@ export class PatientTableComponent implements OnInit{
   }
 
   openNew() {
-    this.patient = this.initializePatient();
     this.editMode = false;
     this.submitted = false;
     this.patientDialog = true;
   }
 
-  editPatient(patient: Patient) {
+  editPatient(patient: IPatientResponse) {
     this.patient = { ...patient };
     this.editMode = true;
     this.patientDialog = true;
@@ -112,13 +99,12 @@ export class PatientTableComponent implements OnInit{
     this.router.navigate(['/patient-page/patient', patient.id]);
   }
 
-  deletePatient(patient: Patient) {
+  deletePatient(patient: IPatientResponse) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + patient.fullName + '?',
+      message: 'Are you sure you want to delete ' + patient.pacientNamem + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.patients = this.patients.filter(val => val.id !== patient.id);
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -137,10 +123,8 @@ export class PatientTableComponent implements OnInit{
   savePatient() {
     this.submitted = true;
 
-    if (this.patient.fullName.trim() && this.patient.email) {
-      if (this.patient.id) {
-        // Update existing patient
-        this.patients[this.findIndexById(this.patient.id)] = this.patient;
+    if (this.patient.pacientNamem.trim() && this.patient.pacientEmail) {
+      if (this.patient) {
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -148,9 +132,6 @@ export class PatientTableComponent implements OnInit{
           life: 3000
         });
       } else {
-        // Create new patient
-        this.patient.id = this.generateId();
-        this.patients.push(this.patient);
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -161,12 +142,7 @@ export class PatientTableComponent implements OnInit{
 
       this.patients = [...this.patients];
       this.patientDialog = false;
-      this.patient = this.initializePatient();
     }
-  }
-
-  findIndexById(id: number): number {
-    return this.patients.findIndex(patient => patient.id === id);
   }
 
   generateId(): number {
