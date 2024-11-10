@@ -61,6 +61,6 @@ public class PrescriptionController : ControllerBase
             medicines.Add(MedicineModel.MapMedicineResponse(medicineRequest));
         }
         
-        return new PrescriptionResponse(prescriptionModel.Id, prescriptionModel.PatientId, prescriptionModel.Diagnostic, medicines);
+        return new PrescriptionResponse(prescriptionModel.Id, prescriptionModel.Patient.Id, prescriptionModel.Patient.Fullname, prescriptionModel.Diagnostic, medicines);
     }
 }

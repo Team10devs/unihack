@@ -3,7 +3,9 @@ using MedicalAPI.Domain.Entities.Entity.Documents;
 using MedicalAPI.Domain.Entities.Medicine;
 using MedicalAPI.Domain.Entities.Prescription;
 using MedicalAPI.Repository.Database;
+using MedicalAPI.Service.Firebase.Mail;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Security;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -13,10 +15,12 @@ namespace MedicalAPI.Service.Firebase.Prescription;
 public class PrescriptionService : IPrescriptionService
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public PrescriptionService(AppDbContext context)
+    public PrescriptionService(AppDbContext context,IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task<PrescriptionModel> GeneratePrescription(PrescriptionRequest prescription)
@@ -52,7 +56,7 @@ public class PrescriptionService : IPrescriptionService
             }
             
             var prescriptionModel =
-                new PrescriptionModel(patient.Id, doctor.Id, prescription.Diagnostic, medicines);
+                new PrescriptionModel(patient, doctor.Id, prescription.Diagnostic, medicines);
             
             QuestPDF.Settings.License = LicenseType.Community;
             using MemoryStream memoryStream = new MemoryStream();
@@ -150,6 +154,8 @@ public class PrescriptionService : IPrescriptionService
             _context.Prescriptions.Add(prescriptionModel);
             await _context.SaveChangesAsync();
             
+            await _emailService.SendEmailAsync(doctor, patient, prescriptionPdf);
+            
             return prescriptionModel;
         }
         catch (Exception e)
@@ -160,8 +166,10 @@ public class PrescriptionService : IPrescriptionService
 
     public async Task<IEnumerable<PrescriptionModel>> GetPatientPrescriptions(string patientId)
     {
-        return await _context.Prescriptions.Include(p => p.Medicine)
-            .Where(p => p.PatientId == patientId)
+        return await _context.Prescriptions
+            .Include(p => p.Medicine)
+            .Include(p=>p.Patient)
+            .Where(p => p.Patient.Id == patientId)
             .ToListAsync();
     }
 
