@@ -10,3 +10,4 @@ export interface IAppointment{
   AppointmentStatus : AppointmentStatus;
   Notes : string;
 }
+

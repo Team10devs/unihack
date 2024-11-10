@@ -1,24 +1,22 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {Table, TableModule} from 'primeng/table';
-import {FormsModule} from '@angular/forms';
-import {DialogModule} from 'primeng/dialog';
-import {PaginatorModule} from 'primeng/paginator';
-import {Ripple} from 'primeng/ripple';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {Button, ButtonDirective} from 'primeng/button';
-import {ChipsModule} from 'primeng/chips';
-import {NgClass, NgIf} from '@angular/common';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
-
-interface Patient {
-  id?: number;
-  fullName: string;
-  age: number;
-  gender: string;
-  email: string;
-  medicalHistory: string;
-}
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Table, TableModule } from 'primeng/table';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { PaginatorModule } from 'primeng/paginator';
+import { Ripple } from 'primeng/ripple';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button, ButtonDirective } from 'primeng/button';
+import { ChipsModule } from 'primeng/chips';
+import {DatePipe, NgClass, NgIf} from '@angular/common';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { PatientTableService } from './patient-table.service';
+import { AuthService } from '../../AuthService';
+import { IPatientResponse } from '../../models/IPatientResponse';
+import { HttpClientModule } from '@angular/common/http';
+import {Observable, tap} from 'rxjs';
+import {environments} from '../../environment/environment';
+import {CalendarModule} from 'primeng/calendar'; // Add this import
 
 @Component({
   selector: 'app-patient-table',
@@ -35,9 +33,17 @@ interface Patient {
     ChipsModule,
     NgIf,
     NgClass,
-    RouterOutlet
+    RouterOutlet,
+    HttpClientModule,
+    CalendarModule,
+    DatePipe,
+    // Add HttpClientModule to imports
   ],
-  providers:[MessageService,ConfirmationService] ,
+  providers: [
+    MessageService,
+    ConfirmationService,
+    PatientTableService  // Add the service to providers
+  ],
   templateUrl: './patient-table.component.html',
   styleUrl: './patient-table.component.css'
 })
@@ -47,9 +53,9 @@ export class PatientTableComponent implements OnInit{
   @ViewChild('dt') dt!: Table;
 
   patientDialog: boolean = false;
-  patients: Patient[] = [];
-  patient: Patient = this.initializePatient();
-  selectedPatients: Patient[] = [];
+  patients: IPatientResponse[] = [];
+  patient !: IPatientResponse;
+  selectedPatients: IPatientResponse[] = [];
   submitted: boolean = false;
   editMode: boolean = false;
   loading: boolean = false;
@@ -60,80 +66,68 @@ export class PatientTableComponent implements OnInit{
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private router : Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private patientTableService :PatientTableService,
+    private authService :AuthService
   ) {}
 
   ngOnInit() {
     this.loadPatients();
   }
 
-  initializePatient(): Patient {
-    return {
-      fullName: '',
-      age: 0,
-      gender: '',
-      email: '',
-      medicalHistory: ''
-    };
-  }
-
   loadPatients() {
     this.loading = true;
-    setTimeout(() => {
-      this.patients = [
-        {
-          id: 1,
-          fullName: 'John Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
-        },
-        {
-          id: 3,
-          fullName: 'J2ohn Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
-        },
-        {
-          id: 2,
-          fullName: 'Jo3hn Doe',
-          age: 45,
-          gender: 'Male',
-          email: 'john@example.com',
-          medicalHistory: 'Hypertension, Diabetes'
+
+    // Using proper subscription handling
+    this.authService.userId$.subscribe({
+      next: (userId) => {
+        if (userId) {
+          this.patientTableService.getPatientsByDoctorId(userId).subscribe({
+            next: (data) => {
+              this.patients = data;
+              console.log('Received patients:', this.patients);
+              this.loading = false;
+            },
+            error: (error) => {
+              console.error('Error fetching patients:', error);
+              this.loading = false;
+            },
+            complete: () => {
+              this.loading = false;
+            }
+          });
         }
-      ];
-      this.loading = false;
-    }, 1000);
+      },
+      error: (error) => {
+        console.error('Error getting userId:', error);
+        this.loading = false;
+      }
+    });
   }
 
+
   openNew() {
-    this.patient = this.initializePatient();
     this.editMode = false;
     this.submitted = false;
     this.patientDialog = true;
   }
 
-  editPatient(patient: Patient) {
+  editPatient(patient: IPatientResponse) {
     this.patient = { ...patient };
     this.editMode = true;
     this.patientDialog = true;
   }
 
-  goToDetails(patient: { id: number }) {
-    this.router.navigate(['/patient-page/patient', patient.id]);
+  goToDetails(patient : IPatientResponse) {
+    this.router.navigate(['/patient-page/patient', patient.pacientId]);
   }
 
-  deletePatient(patient: Patient) {
+  deletePatient(patient: IPatientResponse) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + patient.fullName + '?',
+      message: 'Are you sure you want to delete ' + patient.pacientNamem + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.patients = this.patients.filter(val => val.id !== patient.id);
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -152,10 +146,8 @@ export class PatientTableComponent implements OnInit{
   savePatient() {
     this.submitted = true;
 
-    if (this.patient.fullName.trim() && this.patient.email) {
-      if (this.patient.id) {
-        // Update existing patient
-        this.patients[this.findIndexById(this.patient.id)] = this.patient;
+    if (this.patient.pacientNamem.trim() && this.patient.pacientEmail) {
+      if (this.patient) {
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -163,9 +155,6 @@ export class PatientTableComponent implements OnInit{
           life: 3000
         });
       } else {
-        // Create new patient
-        this.patient.id = this.generateId();
-        this.patients.push(this.patient);
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -176,12 +165,7 @@ export class PatientTableComponent implements OnInit{
 
       this.patients = [...this.patients];
       this.patientDialog = false;
-      this.patient = this.initializePatient();
     }
-  }
-
-  findIndexById(id: number): number {
-    return this.patients.findIndex(patient => patient.id === id);
   }
 
   generateId(): number {

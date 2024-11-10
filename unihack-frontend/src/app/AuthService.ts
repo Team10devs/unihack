@@ -13,7 +13,7 @@ export class AuthService {
 
   setUserRole$(userRole : string){
     localStorage.setItem('userRole', userRole);
-    this.userIdSubject.next(userRole);
+    this.userRole.next(userRole);
   }
 
   setUserId(userId: string): void {

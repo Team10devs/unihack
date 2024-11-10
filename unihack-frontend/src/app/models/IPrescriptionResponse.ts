@@ -1,7 +1,7 @@
 import {IMedicineResponse} from './IMedicineResponse';
 
 export interface IPrescriptionResponse{
-  PatientId : string;
-  Diagnostic : string;
-  Medicine : IMedicineResponse[];
+  patientId : string;
+  diagnostic : string;
+  medicine : IMedicineResponse[];
 }
