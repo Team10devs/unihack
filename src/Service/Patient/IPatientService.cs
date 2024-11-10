@@ -6,4 +6,5 @@ public interface IPatientService
 {
     Task<IEnumerable<PatientModel>> GetPatientsByDoctorIdAsync(string doctorId);
     Task<PatientModel> GetPatientByEmailAsync(string email);
+    Task<PatientModel> GetPatientByIdAsync(string id);
 }
