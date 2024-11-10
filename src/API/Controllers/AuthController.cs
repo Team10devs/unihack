@@ -77,20 +77,22 @@ public class AuthController : ControllerBase
 
         try
         {
-            // Obține ID-ul Firebase și tokenul de autentificare
             var customToken = await _firebaseService.LoginAsync(loginRequest.email);
-            
+        
             var userType = await _firebaseService.GetUserTypeAsync(loginRequest.email);
             Console.WriteLine(userType);
+            
+            string userId = string.Empty;
 
             if (userType == "Patient")
             {
                 var patient = await _userRepository.GetPatientByEmailAsync(loginRequest.email);
                 if (patient == null)
                 {
-                    return Unauthorized(new { Message = "Login failed" + userType, Error = "Patient does not exist in the database" });
+                    return Unauthorized(new { Message = "Login failed", Error = "Patient does not exist in the database" });
                 }
-                
+
+                userId = patient.Id; 
                 await _firebaseService.SaveDeviceTokenAsync(patient.Id, customToken);
             }
             else if (userType == "Doctor")
@@ -98,23 +100,25 @@ public class AuthController : ControllerBase
                 var doctor = await _userRepository.GetDoctorByEmailAsync(loginRequest.email);
                 if (doctor == null)
                 {
-                    return Unauthorized(new { Message = "Login failed" + userType, Error = "Doctor does not exist in the database" });
+                    return Unauthorized(new { Message = "Login failed", Error = "Doctor does not exist in the database" });
                 }
-                
+
+                userId = doctor.Id; 
                 await _firebaseService.SaveDeviceTokenAsync(doctor.Id, customToken);
             }
             else
             {
                 return Unauthorized(new { Message = "Login failed", Error = "User type is invalid" });
             }
-
-            return Ok(new { Token = customToken, UserType = userType });
+            
+            return Ok(new { Token = customToken, UserType = userType, UserId = userId });
         }
         catch (Exception ex)
         {
             return Unauthorized(new { Message = "Login failed", Error = ex.Message });
         }
     }
+
 
 
 
