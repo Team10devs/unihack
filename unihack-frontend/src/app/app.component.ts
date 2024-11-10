@@ -25,8 +25,6 @@ export class AppComponent implements OnInit {
 
 userId :string | null  = null;
 userRole : string | null = null;
-items: MenuItem[] = [];
-
   ngOnInit(): void {
     this.userId = localStorage.getItem('userUID');
 
@@ -41,14 +39,26 @@ items: MenuItem[] = [];
       this.loadScript('https://cdn.botpress.cloud/webchat/v2.2/inject.js', () => {
         this.loadScript('https://files.bpcontent.cloud/2024/11/09/08/20241109084554-UXGPSC7L.js');
       });
+  }
 
-
+  private setMenuItems(): void {
     this.items = [
-      {label: 'Home', icon: 'pi pi-fw pi-home'},
-      {label: 'Calendar', icon: 'pi pi-fw pi-calendar',routerLink : 'calendar-page'},
-      {label: 'Patient List', icon: 'pi pi-fw pi-calendar', routerLink: 'patient-page',},
-      {label: 'Profile', icon: 'pi pi-fw pi pi-user',routerLink:'profile-page' }
+      { label: 'Home', icon: 'pi pi-fw pi-home' },
+      { label: 'Calendar', icon: 'pi pi-fw pi-calendar', routerLink: 'calendar-page' }
     ];
+
+    // Add 'Patient List' only if the user role is 'doctor'
+    if (this.userRole === 'Doctor') {
+      this.items.push({
+        label: 'Patient List',
+        icon: 'pi pi-fw pi-users',
+        routerLink: 'patient-page',
+      });
+    }
+
+    this.items.push(
+      { label: 'Profile', icon: 'pi pi-fw pi-user', routerLink: 'profile-page' }
+    )
   }
 
   private loadScript(src: string, callback?: () => void): void {
