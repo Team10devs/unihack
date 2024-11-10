@@ -290,6 +290,7 @@
 @layer primeng {
   * {
     box-sizing: border-box;
+    padding: 5px;
   }
 
   .p-component {
