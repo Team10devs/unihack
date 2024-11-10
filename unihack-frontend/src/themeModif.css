@@ -290,7 +290,6 @@
 @layer primeng {
   * {
     box-sizing: border-box;
-    padding: 5px;
   }
 
   .p-component {
@@ -6557,10 +6556,5 @@
     color: #ffffff;
   }
 
-  .flex.justify-content-between.align-items-center {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
+
 }
