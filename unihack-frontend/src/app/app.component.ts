@@ -10,6 +10,7 @@ import {RegisterPageComponent} from './register-page/register-page.component';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {AuthService} from './AuthService';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -23,9 +24,16 @@ export class AppComponent implements OnInit {
   constructor(private renderer: Renderer2, private router: Router, private auth:AuthService) {}
 
 userId :string | null  = null;
+userRole : string | null = null;
+items: MenuItem[] = [];
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('userUID');
+
+    this.auth.userRole$.subscribe(temp=>{
+        this.userRole =temp;
+        this.setMenuItems();
+    });
 
     this.auth.userId$.subscribe((id) => {
       this.userId = id;
