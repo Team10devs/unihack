@@ -66,7 +66,7 @@ public class AppointmentController : ControllerBase
         }
     }
 
-    [HttpPatch("PatchStatus{Id}")]
+    [HttpPatch("PatchStatus")]
     public async Task<ActionResult> ChangeAppointmentStatus(string appointmentId, 
         [FromBody] AppointmentStatus appointmentStatus)
     {
